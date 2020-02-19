@@ -3,9 +3,27 @@ import java.security.*;
 import java.security.spec.*;
 import java.io.*;
 public class RestrictionsRecovery {
+	private RestrictionsRecovery() {}
 	public static void main(String[] args) throws Exception {
+		String file = "";
 		if (args.length == 0) {
 			RestrictionsRecovery.printUsage();
+		} else if (args.length == 1) {
+			if (args[0].equals("-v")) {
+				RestrictionsRecovery.printVersion();
+			} else if (args[0].equals("-version")) {
+				RestrictionsRecovery.printVersion();
+			} else {
+				RestrictionsRecovery.printUsage();
+			}
+		} else if (args.length == 2) {
+			if (args[0].equals("-f")) {
+				file = args[1];
+			} else if (args[0].equals("-file")) {
+				file = args[1];
+			} else {
+				RestrictionsRecovery.printUsage();
+			}
 		} else if (args.length == 4) {
 			String key = "";
 			String salt = "";
@@ -51,14 +69,22 @@ public class RestrictionsRecovery {
 		} else {
 			RestrictionsRecovery.printUsage();
 		}
+		KeySaltPair pair = PropertyListReader.getKeyAndSaltFromPlist(file);
+		RestrictionsRecovery.calculate(pair.getKey(), pair.getSalt());
 	}
 	private static void printUsage() {
 		System.out.println("Usage: java RestrictionsRecovery [options]");
 		System.out.println("  Options:");
+		System.out.println("    -f file, -file file: reads the key and salt directly from the passcode property list file");
 		System.out.println("    -k key, -key key: specifies key to use to brute force passcode");
 		System.out.println("    -s salt, -salt salt: specifies salt used to produce key");
+		System.out.println("    -v, -version: displays the version of RestrictionsRecovery installed");
 		System.out.println("    -h, -help: displays this menu");
 		System.out.println("\nOn iOS 7.0 to iOS 11.4.1, the key and salt are found in the com.apple.restrictionspassword.plist file located in /var/mobile/preferences.");
+		System.exit(0);
+	}
+	private static void printVersion() {
+		System.out.println("RestrictionsRecovery version: v" + RRConst.VERSION);
 		System.exit(0);
 	}
 	private static void calculate(String key, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException, UnsupportedEncodingException {
@@ -70,5 +96,6 @@ public class RestrictionsRecovery {
 		} else {
 			System.out.println("The key " + key + " with the salt " + salt + " does not appear to be a valid combination for any iOS restrictions passcode. Please ensure you have entered the key and salt correctly.");
 		}
+		System.exit(0);
 	}
 }
