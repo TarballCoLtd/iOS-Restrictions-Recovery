@@ -171,15 +171,19 @@ public class RestrictionsRecovery {
 		System.exit(0);
 	}
 	private static void downloadViaSSH(String ip, int port, String password) throws IOException {
-		SSHClient ssh = new SSHClient();
-		ssh.addHostKeyVerifier(new PromiscuousVerifier());
-		ssh.loadKnownHosts();
-		ssh.connect(ip, port);
-		ssh.authPassword("root", password);
-		ssh.newSCPFileTransfer().download("/private/var/mobile/Library/Preferences/com.apple.restrictionspassword.plist", "password.plist");
-		ssh.disconnect();
-		ssh.close();
-		System.exit(0);
+		if (RestrictionsRecovery.identifyHostOS() != OperatingSystem.OTHER) {
+			SSHClient ssh = new SSHClient();
+			ssh.addHostKeyVerifier(new PromiscuousVerifier());
+			ssh.loadKnownHosts();
+			ssh.connect(ip, port);
+			ssh.authPassword("root", password);
+			ssh.newSCPFileTransfer().download("/private/var/mobile/Library/Preferences/com.apple.restrictionspassword.plist", "password.plist");
+			ssh.disconnect();
+			ssh.close();
+			System.exit(0);
+		} else {
+			RestrictionsRecovery.printUnsupportedOS();
+		}
 	}
 	private static OperatingSystem identifyHostOS() {
 		String os = System.getProperty("os.name").toLowerCase();
