@@ -180,6 +180,8 @@ public class RestrictionsRecovery {
 			ssh.newSCPFileTransfer().download("/private/var/mobile/Library/Preferences/com.apple.restrictionspassword.plist", "password.plist");
 			ssh.disconnect();
 			ssh.close();
+		} else {
+			RestrictionsRecovery.printUnsupportedOS();
 		}
 		System.exit(0);
 	}
@@ -198,5 +200,9 @@ public class RestrictionsRecovery {
 		} else {
 			return OperatingSystem.OTHER;
 		}
+	}
+	private static void printUnsupportedOS() {
+		System.out.println("Host operating system is unsupported by iOS Restrictions Recovery.");
+		System.exit(0);
 	}
 }
