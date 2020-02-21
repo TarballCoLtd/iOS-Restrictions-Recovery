@@ -5,17 +5,21 @@ A command-line tool (for now) that will recover the restrictions passcode from a
 
 ## Credit
 
-slf4j Copyright (c) 2004-2017 QOS.ch
-bc-java Copyright (c) 2000-2019 The Legion of the Bouncy Castle Inc.
+slf4j Copyright (c) 2004-2017 QOS.ch<br/>
+bc-java Copyright (c) 2000-2019 The Legion of the Bouncy Castle Inc.<br/>
 sshj Copyright (c) 2010-2012 sshj contributors
 
 ## Dependencies
 
 To compile:<br/>
-slf4j (slf4j-api-1.7.2 and slf4j-jdk14-1.7.2 are used for compilation of the release jars)
-sshj (sshj-0.27.0 is used for compilation of the release jars)
-ed25519-java (eddsa-0.3.0 is used for compilation of the release jars)
-bc-java (bcprov-jdk15on-1.64 is used for compilation of the release jars)
+slf4j (slf4j-api-1.7.2 and slf4j-jdk14-1.7.2 are used for compilation of the release jars)<br/>
+sshj (sshj-0.27.0 is used for compilation of the release jars)<br/>
+ed25519-java (eddsa-0.3.0 is used for compilation of the release jars)<br/>
+bc-java (bcprov-jdk15on-1.64 is used for compilation of the release jars)<br/><br/>
+To use the iproxy feature:<br/>
+    -macOS: homebrew, libimobiledevice<br/>
+    -Unix-based operating systems: libusbmuxd-tools<br/>
+    -Windows: support coming soon
 
 ## Compilation/Execution
 
