@@ -1,4 +1,4 @@
 package com.emeryferrari.iosrr;
 public enum OperatingSystem {
-	WINDOWS, MACOS, UNIX, OTHER;
+	WINDOWS, MACOSMOJAVE, MACOSCATALINA, UNIX, OTHER;
 }

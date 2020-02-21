@@ -4,6 +4,8 @@ import java.security.spec.*;
 import java.io.*;
 import net.schmizz.sshj.*;
 import net.schmizz.sshj.transport.verification.*;
+import org.xml.sax.*;
+import javax.xml.parsers.*;
 public class RestrictionsRecovery {
 	private RestrictionsRecovery() {}
 	public static void main(String[] args) throws Exception {
@@ -18,6 +20,8 @@ public class RestrictionsRecovery {
 				RestrictionsRecovery.printVersion();
 			} else if (args[0].equals("-version")) {
 				RestrictionsRecovery.printVersion();
+			} else if (args[0].equals("-iproxy")) {
+				RestrictionsRecovery.launchIproxy(22, "alpine");
 			} else {
 				RestrictionsRecovery.printUsage();
 			}
@@ -30,6 +34,18 @@ public class RestrictionsRecovery {
 				sshIP = args[1];
 			} else if (args[0].equals("--secure-shell")) {
 				sshIP = args[1];
+			} else {
+				RestrictionsRecovery.printUsage();
+			}
+		} else if (args.length == 3) {
+			if (args[0].equals("-iproxy")) {
+				if (args[1].equals("-port")) {
+					RestrictionsRecovery.launchIproxy(Integer.parseInt(args[2]), "alpine");
+				} else if (args[1].equals("-password")) {
+					RestrictionsRecovery.launchIproxy(22, args[2]);
+				} else {
+					RestrictionsRecovery.printUsage();
+				}
 			} else {
 				RestrictionsRecovery.printUsage();
 			}
@@ -86,6 +102,28 @@ public class RestrictionsRecovery {
 				RestrictionsRecovery.calculate(key, salt);
 			} else {
 				RestrictionsRecovery.downloadViaSSH(sshIP, port, password);
+				KeySaltPair pair = PropertyListReader.getKeyAndSaltFromPlist("password.plist");
+				RestrictionsRecovery.calculate(pair.getKey(), pair.getSalt());
+			}
+		} else if (args.length == 5) {
+			if (args[0].equals("-iproxy")) {
+				if (args[1].equals("-port")) {
+					if (args[3].equals("-password")) {
+						RestrictionsRecovery.launchIproxy(Integer.parseInt(args[2]), args[4]);
+					} else {
+						RestrictionsRecovery.printUsage();
+					}
+				} else if (args[1].equals("-password")) {
+					if (args[3].equals("-port")) {
+						RestrictionsRecovery.launchIproxy(Integer.parseInt(args[4]), args[2]);
+					} else {
+						RestrictionsRecovery.printUsage();
+					}
+				} else {
+					RestrictionsRecovery.printUsage();
+				}
+			} else {
+				RestrictionsRecovery.printUsage();
 			}
 		} else if (args.length == 6) {
 			if (args[0].equals("-ssh")) {
@@ -135,6 +173,8 @@ public class RestrictionsRecovery {
 		if (file.equals("")) {
 			if (!(sshIP.equals(""))) {
 				RestrictionsRecovery.downloadViaSSH(sshIP, port, password);
+				KeySaltPair pair = PropertyListReader.getKeyAndSaltFromPlist("password.plist");
+				RestrictionsRecovery.calculate(pair.getKey(), pair.getSalt());
 			}
 		} else {
 			KeySaltPair pair = PropertyListReader.getKeyAndSaltFromPlist(file);
@@ -144,9 +184,10 @@ public class RestrictionsRecovery {
 	private static void printUsage() {
 		System.out.println("Usage: java RestrictionsRecovery [options]");
 		System.out.println("  Options:");
+		System.out.println("    -iproxy [port]: recover the restrictions passcode directly from a connected jailbroken device with OpenSSH installed, with the port specified in the optional port argument; if no port is specified, 22 will be used\n");
 		System.out.println("    -ssh ip_address, --secure-shell ip_address: connects to a jailbroken device and recovers the restrictions passcode directly from it; must have OpenSSH installed on the target device");
-		System.out.println("    -password password: (optional) specifies SSH password when connecting to device via SSH, if no password is specified, 'alpine' will be used");
-		System.out.println("    -port port: (optional) specifies SSH port when connecting to device via SSH, if no port is specified, 22 will be used\n");
+		System.out.println("    -password password: (optional) specifies SSH password when connecting to device via SSH, if no password is specified, 'alpine' will be used; can also be used with the -iproxy option");
+		System.out.println("    -port port: (optional) specifies SSH port when connecting to device via SSH, if no port is specified, 22 will be used; can also be used with the -iproxy option\n");
 		System.out.println("    -f file, -file file: reads the key and salt directly from the passcode property list file\n");
 		System.out.println("    -k key, -key key: specifies key to use to brute force passcode");
 		System.out.println("    -s salt, -salt salt: specifies salt used to produce key");
@@ -190,7 +231,11 @@ public class RestrictionsRecovery {
 		if (os.indexOf("win") >= 0) {
 			return OperatingSystem.WINDOWS;
 		} else if (os.indexOf("mac") >= 0) {
-			return OperatingSystem.MACOS;
+			if (System.getProperty("os.version").indexOf("10.15") >= 0) {
+				return OperatingSystem.MACOSCATALINA;
+			} else {
+				return OperatingSystem.MACOSMOJAVE;
+			}
 		} else if (os.indexOf("nix") >= 0) {
 			return OperatingSystem.UNIX;
 		} else if (os.indexOf("nux") >= 0) {
@@ -203,6 +248,31 @@ public class RestrictionsRecovery {
 	}
 	private static void printUnsupportedOS() {
 		System.out.println("Host operating system is unsupported by iOS Restrictions Recovery.");
+		System.exit(0);
+	}
+	private static void launchIproxy(int port, String password) throws IOException, SAXException, ParserConfigurationException, InvalidKeySpecException, NoSuchAlgorithmException {
+		ProcessBuilder builder = null;
+		if (RestrictionsRecovery.identifyHostOS() == OperatingSystem.MACOSMOJAVE || RestrictionsRecovery.identifyHostOS() == OperatingSystem.UNIX) {
+			builder = new ProcessBuilder("/bin/bash", "-c", "iproxy", "23", ""+port);
+		} else if (RestrictionsRecovery.identifyHostOS() == OperatingSystem.MACOSCATALINA) {
+			builder = new ProcessBuilder("/bin/zsh", "-c", "iproxy", "23", ""+port);
+		} else {
+			RestrictionsRecovery.printUnsupportedOS();
+		}
+		builder.redirectErrorStream(true);
+		Process process = builder.start();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		String line = reader.readLine();
+		if (line.equals("waiting for connection")) {
+			RestrictionsRecovery.downloadViaSSH("127.0.0.1", 23, password);
+			KeySaltPair pair = PropertyListReader.getKeyAndSaltFromPlist("password.plist");
+			RestrictionsRecovery.calculate(pair.getKey(), pair.getSalt());
+		} else {
+			RestrictionsRecovery.printIproxyError();
+		}
+	}
+	private static void printIproxyError() {
+		System.out.println("iproxy encountered a fatal error. Please ensure you have the dependencies listed in the README installed.");
 		System.exit(0);
 	}
 }
