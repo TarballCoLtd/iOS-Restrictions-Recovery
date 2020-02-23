@@ -27,20 +27,8 @@ This tool can either be run from the .jar executable of the latest release in th
 
 ## Prerequisites
 
-Java Runtime Environment or Java Development Kit
+Java Runtime Environment or Java Development Kit<br/>
 macOS, Windows, or a Unix-based operating system
-
-## Command-line arguments
-
--iproxy [port]: recover the restrictions passcode directly from a connected jailbroken device with OpenSSH installed, with the port specified in the optional port argument; if no port is specified, 22 will be used<br/>
--ssh ip_address, --secure-shell ip_address: connects to a jailbroken device and recovers the restrictions passcode directly from it; must have OpenSSH installed on the target device<br/>
--password password: (optional) specifies SSH password when connecting to device via SSH, if no password is specified, 'alpine' will be used; can also be used with the -iproxy option<br/>
--port port: (optional) specifies SSH port when connecting to device via SSH, if no port is specified, 22 will be used; can also be used with the -iproxy option<br/>
--f file, -file file: reads the key and salt directly from the passcode property list file<br/>
--k key, -key key: specifies key to use to brute force passcode<br/>
--s salt, -salt salt: specifies salt used to produce key<br/>
--v, -version: displays the version of RestrictionsRecovery installed<br/>
--h, -help: displays this menu
 
 ## Known issues
 
