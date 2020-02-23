@@ -27,8 +27,8 @@ This tool can either be run from the .jar executable of the latest release in th
 
 ## Prerequisites
 
-Java Runtime Environment or Java Development Kit<br/>
-Windows OS
+Java Runtime Environment or Java Development Kit
+macOS, Windows, or a Unix-based operating system
 
 ## Command-line arguments
 
