@@ -94,7 +94,7 @@ public class RestrictionsRecovery {
 		} else if (RestrictionsRecovery.identifyHostOS() == OperatingSystem.MACOSCATALINA) {
 			builder = new ProcessBuilder("/bin/zsh", "-c", "iproxy", "23", ""+port);
 		} else if (RestrictionsRecovery.identifyHostOS() == OperatingSystem.WINDOWS) {
-			
+			builder = new ProcessBuilder("cmd.exe", "/c", "iproxy", "23", ""+port); // MAKE SURE YOU HAVE IPROXY IN YOUR PATH ENVIRONMENT VARIABLE
 		} else {
 			CommandLineOutput.printUnsupportedOS();
 		}
