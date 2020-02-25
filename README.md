@@ -19,7 +19,7 @@ bc-java (bcprov-jdk15on-1.64 is used for compilation of the release jars)<br/><b
 To use the iproxy feature:<br/>
     -macOS: homebrew, libimobiledevice<br/>
     -Unix-based operating systems: libusbmuxd-tools<br/>
-    -Windows: support coming soon
+    -Windows: Must have iproxy in your PATH environment variable
 
 ## Compilation/Execution
 
