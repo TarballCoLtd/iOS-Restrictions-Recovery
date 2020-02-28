@@ -1,7 +1,7 @@
 # iOS Restrictions Recovery
 
 by Emery Ferrari<br/>
-A command-line tool (for now) that will recover the restrictions passcode from a device running iOS 7.0-11.4.1.
+A GUI/command-line that will recover the restrictions passcode from a device running iOS 7.0-11.4.1.
 
 ## Credit
 
@@ -24,11 +24,6 @@ To use the iproxy feature:<br/>
 ## Compilation/Execution
 
 This tool can either be run from the .jar executable of the latest release in the Releases tab, or can be compiled using javac.
-
-## Prerequisites
-
-Java Runtime Environment or Java Development Kit<br/>
-macOS, Windows, or a Unix-based operating system
 
 ## Known issues
 
