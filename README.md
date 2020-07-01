@@ -1,7 +1,7 @@
 # iOS Restrictions Recovery
 
 by Emery Ferrari<br/>
-A GUI/command-line that will recover the restrictions passcode from a device running iOS 7.0-11.4.1.
+A GUI/command-line tool that will recover the restrictions passcode from a device running iOS 7.0-11.4.1.
 
 ## Credit
 
@@ -16,6 +16,7 @@ slf4j (slf4j-api-1.7.2 and slf4j-jdk14-1.7.2 are used for compilation of the rel
 sshj (sshj-0.27.0 is used for compilation of the release jars)<br/>
 ed25519-java (eddsa-0.3.0 is used for compilation of the release jars)<br/>
 bc-java (bcprov-jdk15on-1.64 is used for compilation of the release jars)<br/><br/>
+Note: The iproxy feature currently does not work.
 To use the iproxy feature:<br/>
     -macOS: homebrew, libimobiledevice<br/>
     -Unix-based operating systems: libusbmuxd-tools<br/>
