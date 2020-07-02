@@ -1,13 +1,17 @@
 # iOS Restrictions Recovery
 
 by Emery Ferrari<br/>
-A GUI/command-line tool that will recover the restrictions passcode from a device running iOS 7.0-11.4.1.
+A GUI/command-line tool that will recover the restrictions passcode from a device running iOS 7.0-11.4.1, either jailbroken or unjailbroken.
 
 ## Credit
 
 slf4j Copyright (c) 2004-2017 QOS.ch<br/>
 bc-java Copyright (c) 2000-2019 The Legion of the Bouncy Castle Inc.<br/>
-sshj Copyright (c) 2010-2012 sshj contributors
+sshj Copyright (c) 2010-2012 sshj contributors<br/><br/>
+The idea for the iTunes backup feature was given to me by:<br/>
+[u/Starwarsfan2099](https://reddit.com/user/Starwarsfan2099) and<br/>
+[u/KuroAMK](https://reddit.com/user/KuroAMK)<br/>
+The code for the iTunes backup feature was loosely based on [this GitHub project](https://github.com/Starwarsfan2099/iOS-Restriction-Key-Cracker) by [u/Starwarsfan2099](https://reddit.com/user/Starwarsfan2099)
 
 ## Dependencies
 
@@ -16,7 +20,7 @@ slf4j (slf4j-api-1.7.2 and slf4j-jdk14-1.7.2 are used for compilation of the rel
 sshj (sshj-0.27.0 is used for compilation of the release jars)<br/>
 ed25519-java (eddsa-0.3.0 is used for compilation of the release jars)<br/>
 bc-java (bcprov-jdk15on-1.64 is used for compilation of the release jars)<br/><br/>
-Note: The iproxy feature currently does not work.
+Note: The iproxy feature currently does not work.<br/>
 To use the iproxy feature:<br/>
     -macOS: homebrew, libimobiledevice<br/>
     -Unix-based operating systems: libusbmuxd-tools<br/>
@@ -25,10 +29,6 @@ To use the iproxy feature:<br/>
 ## Compilation/Execution
 
 This tool can either be run from the .jar executable of the latest release in the Releases tab, or can be compiled using javac.
-
-## Known issues
-
-There are many performance and consistency issues in the source code. None of these will affect your experience with the program in practice, however these are planned to be fixed in a future pre-release update nonetheless.
 
 ## Contacting me
 

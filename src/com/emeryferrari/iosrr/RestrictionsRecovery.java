@@ -89,6 +89,8 @@ public class RestrictionsRecovery {
 		} else if (os.indexOf("mac") >= 0) {
 			if (System.getProperty("os.version").indexOf("10.15") >= 0) {
 				return OperatingSystem.MACOSCATALINA;
+			} else if (System.getProperty("os.version").indexOf("11.") >= 0) {
+				return OperatingSystem.MACOSCATALINA;
 			} else {
 				return OperatingSystem.MACOSMOJAVE;
 			}
