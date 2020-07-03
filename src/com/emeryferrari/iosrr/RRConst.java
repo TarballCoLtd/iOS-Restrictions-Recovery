@@ -2,7 +2,7 @@ package com.emeryferrari.iosrr;
 public class RRConst {
 	private RRConst() {}
 	public static final String NAME = "iOS-Restrictions-Recovery";
-	public static final String VERSION = "v0.6.3";
+	public static final String VERSION = "v0.6.4";
 	public static final String TITLE = "<html><body><font size=\"6\">" + NAME + " " + VERSION + "</font></body></html>";
 	public static final String DESC = "<html><body>Compatible <strong>only</strong> with <strong>iOS 7.0</strong> through <strong>iOS 11.4.1</strong></body></html>";
 	public static final String KEY_SALT_BUTTON = "From key and salt";

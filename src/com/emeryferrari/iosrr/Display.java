@@ -109,7 +109,7 @@ public class Display {
 							if (passcode == null) {
 								throw new Exception("Passcode could not be found. Key and salt does not correspond to any passcode between 0000 and 9999.");
 							} else {
-								JOptionPane.showMessageDialog(null, "Passcode: " + passcode, "Passcode found!", 0);
+								JOptionPane.showMessageDialog(null, "Passcode: " + passcode, "Passcode found!", 1);
 							}
 							Display.FRAME.getContentPane().remove(label);
 							Display.refresh();
@@ -150,7 +150,7 @@ public class Display {
 							if (passcode == null) {
 								throw new Exception("Passcode could not be found. Key and salt does not correspond to any passcode between 0000 and 9999.");
 							} else {
-								JOptionPane.showMessageDialog(null, "Passcode: " + passcode, "Passcode found!", 0);
+								JOptionPane.showMessageDialog(null, "Passcode: " + passcode, "Passcode found!", 1);
 							}
 						} catch (Exception ex) {
 							Display.handleException(ex, true);
@@ -180,7 +180,7 @@ public class Display {
 							if (passcode == null) {
 								throw new Exception("Passcode could not be found. Key and salt does not correspond to any passcode between 0000 and 9999.");
 							} else {
-								JOptionPane.showMessageDialog(null, "Passcode: " + passcode, "Passcode found!", 0);
+								JOptionPane.showMessageDialog(null, "Passcode: " + passcode, "Passcode found!", 1);
 							}
 						} catch (Exception ex) {
 							Display.handleException(ex, true);
@@ -215,7 +215,7 @@ public class Display {
 							if (passcode == null) {
 								throw new Exception("Passcode could not be found. Key and salt does not correspond to any passcode between 0000 and 9999.");
 							} else {
-								JOptionPane.showMessageDialog(null, "Passcode: " + passcode, "Passcode found!", 0);
+								JOptionPane.showMessageDialog(null, "Passcode: " + passcode, "Passcode found!", 1);
 							}
 						} catch (Exception ex) {
 							Display.handleException(ex, true);
