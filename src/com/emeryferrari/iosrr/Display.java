@@ -67,7 +67,7 @@ public class Display {
 					InfoPlist plist = InfoPlist.getInstance(backupPath + backups[i] + "\\");
 					plists[i] = plist;
 					if (plist != null) {
-						JButton button = new JButton(plist.getDeviceName() + " / " + plist.getiOSVersion() + " / " + plist.getBackupDate() + " / " + plist.getDisplayName());
+						JButton button = new JButton(plist.getModelName() + " / " + plist.getiOSVersion() + " / " + plist.getBackupDate() + " / " + plist.getDisplayName() + " / " + plist.getDeviceName());
 						if (plist.getiOSRelease() < 7 || plist.getiOSRelease() > 11) {
 							button.setEnabled(false);
 						}
