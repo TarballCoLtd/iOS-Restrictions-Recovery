@@ -42,7 +42,11 @@ public class Display {
 				OperatingSystem currentOS = RestrictionsRecovery.identifyHostOS();
 				String backupPath = System.getProperty("user.home") + "\\";
 				if (currentOS == OperatingSystem.WINDOWS) {
-					String y = JOptionPane.showInputDialog("Are you using the Microsoft Store version of iTunes? (y/n)");
+					String y = "n";
+					File uwpiTunes = new File(backupPath + "AppData\\Local\\Microsoft\\WindowsApps\\AppleInc.iTunes_nzyj5cx40ttqa");
+					if (uwpiTunes.exists()) {
+						y = "y";
+					}
 					if (y.equalsIgnoreCase("y") || y.equalsIgnoreCase("yes")) {
 						backupPath += "Apple\\MobileSync\\Backup\\";
 					} else {
