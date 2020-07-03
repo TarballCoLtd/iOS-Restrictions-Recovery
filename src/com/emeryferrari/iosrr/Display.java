@@ -74,6 +74,8 @@ public class Display {
 						JButton button = new JButton(plist.getModelName() + " / " + plist.getiOSVersion() + " / " + plist.getBackupDate() + " / " + plist.getDisplayName() + " / " + plist.getDeviceName());
 						if (plist.getiOSRelease() < 7 || plist.getiOSRelease() > 11) {
 							button.setEnabled(false);
+						} else if (!new File(plist.getFile() + "398bc9c2aeeab4cb0c12ada0f52eea12cf14f40b").exists()) {
+							button.setEnabled(false);
 						}
 						button.addActionListener(Display.CLASS_OBJ.new BackupListener(i));
 						Display.FRAME.getContentPane().add(button);
@@ -96,17 +98,27 @@ public class Display {
 		public void actionPerformed(ActionEvent ev) {
 			try {
 				KeySaltPair pair = PropertyListReader.getKeyAndSaltFromPlist(plists[index].getFile() + "398bc9c2aeeab4cb0c12ada0f52eea12cf14f40b");
-				Display.FRAME.getContentPane().add(new JLabel("<html><body><strong>Calculating passcode...</strong></body></html>"));
+				JLabel label = new JLabel("<html><body><strong>Calculating passcode...</strong></body></html>");
+				Display.FRAME.getContentPane().add(label);
 				Display.refresh();
-				String passcode = RestrictionsRecovery.calculate(pair.getKey(), pair.getSalt(), false);
-				if (passcode == null) {
-					throw new Exception("Passcode could not be found. Key and salt does not correspond to any passcode between 0000 and 9999.");
-				} else {
-					JOptionPane.showMessageDialog(null, "Passcode: " + passcode);
-				}
-				Display.FRAME.getContentPane().removeAll();
-				Display.createDisplay();
-				Display.refresh();
+				Thread thread = new Thread() {
+					@Override
+					public void run() {
+						try {
+							String passcode = RestrictionsRecovery.calculate(pair.getKey(), pair.getSalt(), false);
+							if (passcode == null) {
+								throw new Exception("Passcode could not be found. Key and salt does not correspond to any passcode between 0000 and 9999.");
+							} else {
+								JOptionPane.showMessageDialog(null, "Passcode: " + passcode, "Passcode found!", 0);
+							}
+							Display.FRAME.getContentPane().remove(label);
+							Display.refresh();
+						} catch (Exception ex) {
+							Display.handleException(ex, true);
+						}
+					}
+				};
+				thread.start();
 			} catch (Exception ex) {
 				Display.handleException(ex, true);
 			}
@@ -130,12 +142,22 @@ public class Display {
 				String salt = JOptionPane.showInputDialog("Salt?");
 				Display.DESC.setText("<html><b>Calculating passcode...</b></html>");
 				Display.refresh();
-				String passcode = RestrictionsRecovery.calculate(key, salt, false);
-				if (passcode == null) {
-					throw new Exception("Passcode could not be found. Key and salt does not correspond to any passcode between 0000 and 9999.");
-				} else {
-					JOptionPane.showMessageDialog(null, "Passcode: " + passcode);
-				}
+				Thread thread = new Thread() {
+					@Override
+					public void run() {
+						try {
+							String passcode = RestrictionsRecovery.calculate(key, salt, false);
+							if (passcode == null) {
+								throw new Exception("Passcode could not be found. Key and salt does not correspond to any passcode between 0000 and 9999.");
+							} else {
+								JOptionPane.showMessageDialog(null, "Passcode: " + passcode, "Passcode found!", 0);
+							}
+						} catch (Exception ex) {
+							Display.handleException(ex, true);
+						}
+					}
+				};
+				thread.start();
 			} catch (Exception ex) {
 				Display.handleException(ex, true);
 			}
@@ -150,12 +172,22 @@ public class Display {
 				KeySaltPair pair = PropertyListReader.getKeyAndSaltFromPlist(file);
 				Display.DESC.setText("<html><b>Calculating passcode...</b></html>");
 				Display.refresh();
-				String passcode = RestrictionsRecovery.calculate(pair.getKey(), pair.getSalt(), false);
-				if (passcode == null) {
-					throw new Exception("Passcode could not be found. Key and salt does not correspond to any passcode between 0000 and 9999.");
-				} else {
-					JOptionPane.showMessageDialog(null, "Passcode: " + passcode);
-				}
+				Thread thread = new Thread() {
+					@Override
+					public void run() {
+						try {
+							String passcode = RestrictionsRecovery.calculate(pair.getKey(), pair.getSalt(), false);
+							if (passcode == null) {
+								throw new Exception("Passcode could not be found. Key and salt does not correspond to any passcode between 0000 and 9999.");
+							} else {
+								JOptionPane.showMessageDialog(null, "Passcode: " + passcode, "Passcode found!", 0);
+							}
+						} catch (Exception ex) {
+							Display.handleException(ex, true);
+						}
+					}
+				};
+				thread.start();
 			} catch (Exception ex) {
 				Display.handleException(ex, true);
 			}
@@ -171,14 +203,26 @@ public class Display {
 				String port = JOptionPane.showInputDialog("Device SSH port?");
 				Display.DESC.setText("<html><b>Calculating passcode...</b></html>");
 				Display.refresh();
-				RestrictionsRecovery.downloadViaSSH(ip, Integer.parseInt(port), password, false);
-				KeySaltPair pair = PropertyListReader.getKeyAndSaltFromPlist("password.plist");
-				String passcode = RestrictionsRecovery.calculate(pair.getKey(), pair.getSalt(), false);
-				if (passcode == null) {
-					throw new Exception("Passcode could not be found. Key and salt does not correspond to any passcode between 0000 and 9999.");
-				} else {
-					JOptionPane.showMessageDialog(null, "Passcode: " + passcode);
-				}
+				Thread thread = new Thread() {
+					@Override
+					public void run() {
+						try {
+							Display.DESC.setText("Downloading passcode from device...");
+							RestrictionsRecovery.downloadViaSSH(ip, Integer.parseInt(port), password, false);
+							Display.DESC.setText("Bruteforcing passcode...");
+							KeySaltPair pair = PropertyListReader.getKeyAndSaltFromPlist("password.plist");
+							String passcode = RestrictionsRecovery.calculate(pair.getKey(), pair.getSalt(), false);
+							if (passcode == null) {
+								throw new Exception("Passcode could not be found. Key and salt does not correspond to any passcode between 0000 and 9999.");
+							} else {
+								JOptionPane.showMessageDialog(null, "Passcode: " + passcode, "Passcode found!", 0);
+							}
+						} catch (Exception ex) {
+							Display.handleException(ex, true);
+						}
+					}
+				};
+				thread.start();
 			} catch (Exception ex) {
 				Display.handleException(ex, true);
 			}
@@ -194,7 +238,7 @@ public class Display {
 	private static void handleException(Exception ex, boolean message) {
 		ex.printStackTrace();
 		if (message) {
-			JOptionPane.showMessageDialog(null, "Error: " + ex.getClass().toString().split(" ")[1] + ": " + ex.getMessage());
+			JOptionPane.showMessageDialog(null, "Error: " + ex.getClass().toString().split(" ")[1] + ": " + ex.getMessage(), "An exception has occurred", 0);
 		}
 	}
 }
