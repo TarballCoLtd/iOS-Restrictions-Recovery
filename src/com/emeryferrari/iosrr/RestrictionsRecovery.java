@@ -69,7 +69,6 @@ public class RestrictionsRecovery {
 		if (RestrictionsRecovery.identifyHostOS() != OperatingSystem.OTHER) {
 			SSHClient ssh = new SSHClient();
 			ssh.addHostKeyVerifier(new PromiscuousVerifier());
-			ssh.loadKnownHosts();
 			ssh.connect(ip, port);
 			ssh.authPassword("root", password);
 			ssh.newSCPFileTransfer().download("/private/var/mobile/Library/Preferences/com.apple.restrictionspassword.plist", "password.plist");

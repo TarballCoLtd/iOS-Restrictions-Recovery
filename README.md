@@ -1,13 +1,14 @@
-# iOS Restrictions Recovery
+# iOS-Restrictions-Recovery
 
-by Emery Ferrari<br/>
-A GUI/command-line tool that will recover the restrictions passcode from a device running iOS 7.0-11.4.1, either jailbroken or unjailbroken.
+by Alyx Ferrari<br/>
+A GUI/CLI tool that can find the Restrictions or Screen Time passcode of any iOS device running iOS 7.0 through iOS 13.x.
 
 ## Credit
 
 slf4j Copyright (c) 2004-2017 QOS.ch<br/>
 bc-java Copyright (c) 2000-2019 The Legion of the Bouncy Castle Inc.<br/>
 sshj Copyright (c) 2010-2012 sshj contributors<br/><br/>
+[keychain_dumper](https://github.com/ptoomey3/Keychain-Dumper/) was written by [ptoomey3](https://github.com/ptoomey3/).<br/>
 The idea for the iTunes backup feature was given to me by:<br/>
 [u/Starwarsfan2099](https://reddit.com/user/Starwarsfan2099) and<br/>
 [u/KuroAMK](https://reddit.com/user/KuroAMK)<br/>
@@ -15,22 +16,27 @@ The code for the iTunes backup feature was loosely based on [this GitHub project
 
 ## Dependencies
 
-To compile:<br/>
-slf4j (slf4j-api-1.7.2 and slf4j-jdk14-1.7.2 are used for compilation of the release jars)<br/>
-sshj (sshj-0.27.0 is used for compilation of the release jars)<br/>
-ed25519-java (eddsa-0.3.0 is used for compilation of the release jars)<br/>
-bc-java (bcprov-jdk15on-1.64 is used for compilation of the release jars)<br/><br/>
-Note: The iproxy feature currently does not work.<br/>
-To use the iproxy feature:<br/>
-    -macOS: homebrew, libimobiledevice<br/>
-    -Unix-based operating systems: libusbmuxd-tools<br/>
-    -Windows: Must have iproxy in your PATH environment variable
+All dependencies are handled by Maven.<br/>
+sshj<br/>
+slf4j<br/>
+ed25519><br/>
+bcprov-jdk15on<br/>
+bcpkix-jdk15on<br/>
+jzlib
 
 ## Compilation/Execution
 
-This tool can either be run from the .jar executable of the latest release in the Releases tab, or can be compiled using javac.
+To run this program, you can either download the JAR from the Releases tab or generate one yourself with Maven.<br/>
+Whether you use the Releases JAR or one generated yourself, if you want to use the iOS 12-13 features, keychain_dumper must be in the same directory as the JAR.<br/>
+OpenSSH is required to use the iOS 12-13 features and the iOS 7.0-11.4.1 SSH features. If you're using checkra1n, iproxy will work as an alternative. If you're using any other jailbreak, OpenSSH is available on the default repos.
 
 ## Contacting me
 
 I will respond to any PM I receive on Reddit.<br/>
 [u/verystrangebeing](https://reddit.com/user/verystrangebeing/)
+
+## Donate
+
+All of my work is free and open-source. A donation would be greatly appreciated!<br/>
+[Buy me a coffee!](buymeacoff.ee/alyxferrari/)<br/>
+[PayPal](paypal.me/alyxferrari/)
