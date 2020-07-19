@@ -49,9 +49,9 @@ public class Display {
 				@Override
 				public void run() {
 					try {
-						int confirm = JOptionPane.showConfirmDialog(null, "This feature requires SQLite 3.x by Sam Bingner to be installed on your device. Do you consent to automatic installation of this package on your device?");
+						int confirm = 0;
 						if (confirm == 0) {
-							String ip = JOptionPane.showInputDialog("Device IP address? OpenSSH must be installed on your device.");
+							String ip = JOptionPane.showInputDialog("Device IP address? OpenSSH and SQLite 3.x must be installed on your device.");
 							String portStr = JOptionPane.showInputDialog("Device SSH server port? (press enter to default to 22)");
 							int port = 22;
 							if (!portStr.equals("")) {
@@ -81,11 +81,6 @@ public class Display {
 							System.out.println("Giving keychain_dumper '+x' permissions...");
 							Display.refresh();
 							session.exec("chmod +x /User/Documents/keychain_dumper");
-							Display.FRAME.getContentPane().add(new JLabel("Installing SQLite 3.x by Sam Bingner to the device..."));
-							System.out.println("Installing SQLite 3.x by Sam Bingner to the device...");
-							Display.refresh();
-							session = ssh.startSession();
-							session.exec("apt install sqlite3");
 							Display.FRAME.getContentPane().add(new JLabel("Disconnecting..."));
 							System.out.println("Disconnecting...");
 							Display.refresh();
