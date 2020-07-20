@@ -9,7 +9,7 @@ import net.schmizz.sshj.connection.channel.direct.*;
 public class Display {
 	private Display() {}
 	private static final Display CLASS_OBJ = new Display();
-	private static JFrame FRAME = new JFrame(RRConst.NAME + " " + RRConst.VERSION);
+	private static JFrame FRAME = new JFrame(RRConst.FULL_NAME);
 	private static JLabel TITLE = new JLabel(RRConst.TITLE);
 	private static JLabel DESC = new JLabel(RRConst.DESC);
 	private static JButton KEY_SALT_BUTTON = new JButton(RRConst.KEY_SALT_BUTTON);
@@ -18,6 +18,7 @@ public class Display {
 	private static JButton IPROXY_BUTTON = new JButton(RRConst.IPROXY_BUTTON);
 	private static JButton ITUNES_BACKUP = new JButton(RRConst.ITUNES_BACKUP);
 	private static JButton KEYCHAIN_DUMPER = new JButton(RRConst.KEYCHAIN_DUMPER);
+	private static JButton ABOUT = new JButton(RRConst.ABOUT);
 	private static InfoPlist[] plists = null;
 	private static boolean initialized = false;
 	public static void createDisplay() {
@@ -32,6 +33,7 @@ public class Display {
 			Display.IPROXY_BUTTON.addActionListener(Display.CLASS_OBJ.new IproxyButtonListener());
 			Display.IPROXY_BUTTON.setEnabled(false);
 			Display.ITUNES_BACKUP.addActionListener(Display.CLASS_OBJ.new ItunesBackupListener());
+			Display.ABOUT.addActionListener(Display.CLASS_OBJ.new AboutListener());
 			initialized = true;
 		}
 		Display.FRAME.getContentPane().add(Display.TITLE);
@@ -41,7 +43,31 @@ public class Display {
 		Display.FRAME.getContentPane().add(Display.SSH_BUTTON);
 		Display.FRAME.getContentPane().add(Display.KEYCHAIN_DUMPER);
 		Display.FRAME.getContentPane().add(Display.ITUNES_BACKUP);
+		Display.FRAME.getContentPane().add(Display.ABOUT);
 		Display.FRAME.setVisible(true);
+	}
+	public class AboutListener implements ActionListener {
+		public void actionPerformed(ActionEvent ev) {
+			Display.FRAME.getContentPane().removeAll();
+			JLabel title = new JLabel(RRConst.FULL_NAME);
+			JLabel author = new JLabel("<html><body>by Alyx Ferrari<br/></body></html>");
+			JLabel slf4j = new JLabel("slf4j Copyright (c) 2004-2017 QOS.ch");
+			JLabel bcJava = new JLabel("bc-java Copyright (c) 2000-2019 The Legion of the Bouncy Castle Inc.");
+			JLabel sshj = new JLabel("sshj Copyright (c) 2010-2012 sshj contributors");
+			JLabel keychainDumper = new JLabel("keychain_dumper was written by ptoomey3 on GitHub");
+			JLabel backup = new JLabel("The iTunes backup idea was given to me by Reddit users u/Starwarsfan2099 and u/KuroAMK");
+			JButton back = new JButton("Back");
+			back.addActionListener(new BackListener());
+			Display.FRAME.getContentPane().add(title);
+			Display.FRAME.getContentPane().add(author);
+			Display.FRAME.getContentPane().add(slf4j);
+			Display.FRAME.getContentPane().add(bcJava);
+			Display.FRAME.getContentPane().add(sshj);
+			Display.FRAME.getContentPane().add(keychainDumper);
+			Display.FRAME.getContentPane().add(backup);
+			Display.FRAME.getContentPane().add(back);
+			Display.refresh();
+		}
 	}
 	public class KeychainDumperListener implements ActionListener {
 		public void actionPerformed(ActionEvent ev) {

@@ -85,9 +85,8 @@ public class InfoPlist {
 			String backupDate2 = backupDate.substring(14, 19);
 			backupDate = backupDate1 + "@" + backupDate2;
 			return new InfoPlist(deviceName, displayName, backupDate, iOSVersion, file);
-		} catch (Exception ex) {
-			return null;
-		}
+		} catch (Exception ex) {}
+		return null;
 	}
 	public static String identifierToName(String identifier) {
 		if (identifier.equals("iPhone1,1")) {
