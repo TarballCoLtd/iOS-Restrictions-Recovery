@@ -1,5 +1,6 @@
 package com.emeryferrari.iosrr;
 import javax.swing.*;
+import java.net.*;
 import java.awt.event.*;
 import java.io.*;
 import net.schmizz.sshj.*;
@@ -82,89 +83,119 @@ public class Display {
 			new Thread() {
 				@Override
 				public void run() {
+					Display.FRAME.getContentPane().removeAll();
 					try {
-						int confirm = 0;
-						if (confirm == 0) {
-							String ip = JOptionPane.showInputDialog("Device IP address? OpenSSH and SQLite 3.x must be installed on your device.");
-							String portStr = JOptionPane.showInputDialog("Device SSH server port? (press enter to default to 22)");
-							int port = 22;
-							if (!portStr.equals("")) {
-								port = Integer.parseInt(portStr);
-							}
-							String rootPass = JOptionPane.showInputDialog("What is your device's root password? (press enter to default to 'alpine')");
-							if (rootPass.equals("")) {
-								rootPass = "alpine";
-							}
-							Display.FRAME.getContentPane().removeAll();
-							Display.FRAME.getContentPane().add(new JLabel("Connecting to " + ip + ":" + port + " over SSH..."));
-							Display.refresh();
-							System.out.println("Connecting to " + ip + ":" + port + " over SSH...");
-							SSHClient ssh = new SSHClient();
-							ssh.addHostKeyVerifier(new PromiscuousVerifier());
-							ssh.connect(ip, port);
-							Display.FRAME.getContentPane().add(new JLabel("Logging in as user 'root'..."));
-							System.out.println("Logging in as user 'root'...");
-							Display.refresh();
-							ssh.authPassword("root", rootPass);
-							Display.FRAME.getContentPane().add(new JLabel("Uploading keychain_dumper to device..."));
-							Display.refresh();
-							System.out.println("Uploading keychain_dumper to device...");
-							ssh.newSCPFileTransfer().upload("keychain_dumper", "/User/Documents/keychain_dumper");
-							Session session = ssh.startSession();
-							Display.FRAME.getContentPane().add(new JLabel("Giving keychain_dumper '+x' permissions..."));
-							System.out.println("Giving keychain_dumper '+x' permissions...");
-							Display.refresh();
-							session.exec("chmod +x /User/Documents/keychain_dumper");
-							Display.FRAME.getContentPane().add(new JLabel("Disconnecting..."));
-							System.out.println("Disconnecting...");
-							Display.refresh();
-							ssh.disconnect();
-							ssh.close();
-							SSHClient ssh2 = new SSHClient();
-							ssh2.addHostKeyVerifier(new PromiscuousVerifier());
-							Display.FRAME.getContentPane().add(new JLabel("Reconnecting to " + ip + ":" + port + "..."));
-							System.out.println("Reconnecting to " + ip + ":" + port + "...");
-							Display.refresh();
-							ssh2.connect(ip, port);
-							Display.FRAME.getContentPane().add(new JLabel("Logging in as user 'root'..."));
-							System.out.println("Logging in as user 'root'...");
-							Display.refresh();
-							ssh2.authPassword("root", rootPass);
-							Session session2 = ssh2.startSession();
-							JOptionPane.showMessageDialog(null, "Please make sure your device is unlocked and on the home screen.");
-							Display.FRAME.getContentPane().add(new JLabel("Dumping your device's Keychain... (if this blocks, make sure your device is unlocked)"));
-							System.out.println("Dumping your device's Keychain... (if this blocks, make sure your device is unlocked)");
-							Display.refresh();
-							Session.Command cmd = session2.exec("./../mobile/Documents/keychain_dumper");
-							String keychain = IOUtils.readFully(cmd.getInputStream()).toString();
-							Display.FRAME.getContentPane().add(new JLabel("Disconnecting..."));
-							System.out.println("Disconnecting...");
-							Display.refresh();
-							ssh2.disconnect();
-							ssh2.close();
-							Display.FRAME.getContentPane().add(new JLabel("Parsing Keychain dump..."));
-							System.out.println("Parsing Keychain dump...");
-							Display.refresh();
-							String[] list = keychain.split("ParentalControls")[1].split("\n");
-							String password = null;
-							for (int i = 0; i < 20; i++) {
-								if (list[i].startsWith("Keychain Data: ")) {
-									password = list[i].split(": ")[1];
-									break;
-								}
-							}
-							Display.FRAME.getContentPane().add(new JLabel("Found Screen Time passcode! Passcode: " + password));
-							System.out.println("Found Screen Time passcode! Passcode: " + password);
-							Display.refresh();
-							JButton button = new JButton("Back");
-							button.addActionListener(new BackListener());
-							Display.FRAME.getContentPane().add(button);
-							Display.refresh();
-							JOptionPane.showMessageDialog(null, "Found Screen Time passcode! Passcode: " + password);
+						String ip = JOptionPane.showInputDialog("Device IP address? OpenSSH and SQLite 3.x must be installed on your device.");
+						String portStr = JOptionPane.showInputDialog("Device SSH server port? (press enter to default to 22)");
+						int port = 22;
+						if (!portStr.equals("")) {
+							port = Integer.parseInt(portStr);
 						}
+						String rootPass = JOptionPane.showInputDialog("What is your device's root password? (press enter to default to 'alpine')");
+						if (rootPass.equals("")) {
+							rootPass = "alpine";
+						}
+						File keychain_dumper = new File("keychain_dumper");
+						if (!keychain_dumper.exists()) {
+							Display.FRAME.getContentPane().add(new JLabel("Couldn't find keychain_dumper!"));
+							JLabel progress = new JLabel("Downloading keychain_dumper from GitHub...");
+							Display.FRAME.getContentPane().add(progress);
+							Display.refresh();
+							URL url = new URL("https://raw.githubusercontent.com/ptoomey3/Keychain-Dumper/master/keychain_dumper");
+							InputStream is = url.openStream();
+							FileOutputStream fos = new FileOutputStream("keychain_dumper");
+							URLConnection connection = url.openConnection();
+							if (connection instanceof HttpURLConnection) {
+								((HttpURLConnection)connection).setRequestMethod("HEAD");
+							}
+							connection.getInputStream();
+							int total = connection.getContentLength();
+							int b;
+							byte[] data = new byte[1024];
+							int count = 0;
+							while ((b = is.read(data, 0, 1024)) != -1) {
+								fos.write(data, 0, b);
+								count += b;
+								progress.setText("Downloading keychain_dumper from GitHub... (" + count + " bytes / " + total + " bytes)");
+								Display.refresh();
+							}
+							fos.flush();
+							fos.close();
+						}
+						Display.FRAME.getContentPane().add(new JLabel("Connecting to " + ip + ":" + port + " over SSH..."));
+						Display.refresh();
+						System.out.println("Connecting to " + ip + ":" + port + " over SSH...");
+						SSHClient ssh = new SSHClient();
+						ssh.addHostKeyVerifier(new PromiscuousVerifier());
+						ssh.connect(ip, port);
+						Display.FRAME.getContentPane().add(new JLabel("Logging in as user 'root'..."));
+						System.out.println("Logging in as user 'root'...");
+						Display.refresh();
+						ssh.authPassword("root", rootPass);
+						Display.FRAME.getContentPane().add(new JLabel("Uploading keychain_dumper to device..."));
+						Display.refresh();
+						System.out.println("Uploading keychain_dumper to device...");
+						ssh.newSCPFileTransfer().upload("keychain_dumper", "/User/Documents/keychain_dumper");
+						Session session = ssh.startSession();
+						Display.FRAME.getContentPane().add(new JLabel("Giving keychain_dumper '+x' permissions..."));
+						System.out.println("Giving keychain_dumper '+x' permissions...");
+						Display.refresh();
+						session.exec("chmod +x /User/Documents/keychain_dumper");
+						Display.FRAME.getContentPane().add(new JLabel("Disconnecting..."));
+						System.out.println("Disconnecting...");
+						Display.refresh();
+						ssh.disconnect();
+						ssh.close();
+						SSHClient ssh2 = new SSHClient();
+						ssh2.addHostKeyVerifier(new PromiscuousVerifier());
+						Display.FRAME.getContentPane().add(new JLabel("Reconnecting to " + ip + ":" + port + "..."));
+						System.out.println("Reconnecting to " + ip + ":" + port + "...");
+						Display.refresh();
+						ssh2.connect(ip, port);
+						Display.FRAME.getContentPane().add(new JLabel("Logging in as user 'root'..."));
+						System.out.println("Logging in as user 'root'...");
+						Display.refresh();
+						ssh2.authPassword("root", rootPass);
+						Session session2 = ssh2.startSession();
+						JOptionPane.showMessageDialog(null, "Please make sure your device is unlocked and on the home screen.");
+						Display.FRAME.getContentPane().add(new JLabel("Dumping your device's Keychain... (if this blocks, make sure your device is unlocked)"));
+						System.out.println("Dumping your device's Keychain... (if this blocks, make sure your device is unlocked)");
+						Display.refresh();
+						Session.Command cmd = session2.exec("./../mobile/Documents/keychain_dumper");
+						String keychain = IOUtils.readFully(cmd.getInputStream()).toString();
+						session2 = ssh2.startSession();
+						Display.FRAME.getContentPane().add(new JLabel("Removing keychain_dumper from device..."));
+						System.out.println("Removing keychain_dumper from device...");
+						Display.refresh();
+						session2.exec("rm ./../mobile/Documents/keychain_dumper");
+						Display.FRAME.getContentPane().add(new JLabel("Disconnecting..."));
+						System.out.println("Disconnecting...");
+						Display.refresh();
+						ssh2.disconnect();
+						ssh2.close();
+						Display.FRAME.getContentPane().add(new JLabel("Parsing Keychain dump..."));
+						System.out.println("Parsing Keychain dump...");
+						Display.refresh();
+						String[] list = keychain.split("ParentalControls")[1].split("\n");
+						String password = null;
+						for (int i = 0; i < 20; i++) {
+							if (list[i].startsWith("Keychain Data: ")) {
+								password = list[i].split(": ")[1];
+								break;
+							}
+						}
+						Display.FRAME.getContentPane().add(new JLabel("Found Screen Time passcode! Passcode: " + password));
+						System.out.println("Found Screen Time passcode! Passcode: " + password);
+						Display.refresh();
+						JButton button = new JButton("Back");
+						button.addActionListener(new BackListener());
+						Display.FRAME.getContentPane().add(button);
+						Display.refresh();
+						JOptionPane.showMessageDialog(null, "Found Screen Time passcode! Passcode: " + password);
 					} catch (Exception ex) {
 						handleException(ex, true);
 						Display.FRAME.getContentPane().add(new JLabel("Failed to retrieve Screen Time passcode! If you're sure you've done everything correctly, create an issue on GitHub."));
+						Display.FRAME.getContentPane().add(new JLabel(ex.getClass().toString().split(" ")[1]+ ": " + ex.getMessage()));
 						JButton button = new JButton("Back");
 						button.addActionListener(new BackListener());
 						Display.FRAME.getContentPane().add(button);
@@ -359,7 +390,7 @@ public class Display {
 							KeySaltPair pair = PropertyListReader.getKeyAndSaltFromPlist("password.plist");
 							String passcode = RestrictionsRecovery.calculate(pair.getKey(), pair.getSalt(), false);
 							if (passcode == null) {
-								throw new Exception("Passcode could not be found. Key and salt does not correspond to any passcode between 0000 and 9999.");
+								throw new Exception("Passcode could not be found. Specified key and salt do not correspond to any passcode between 0000 and 9999.");
 							} else {
 								JOptionPane.showMessageDialog(null, "Passcode: " + passcode, "Passcode found!", 1);
 							}
