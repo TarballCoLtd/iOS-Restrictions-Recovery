@@ -10,6 +10,7 @@ public class Display {
 	private Display() {}
 	private static final Display CLASS_OBJ = new Display();
 	private static JFrame FRAME = new JFrame(RRConst.FULL_NAME);
+	private static JLabel AUTHOR = new JLabel("by " + RRConst.AUTHOR);
 	private static JLabel TITLE = new JLabel(RRConst.TITLE);
 	private static JLabel DESC = new JLabel(RRConst.DESC);
 	private static JButton KEY_SALT_BUTTON = new JButton(RRConst.KEY_SALT_BUTTON);
@@ -19,13 +20,15 @@ public class Display {
 	private static JButton ITUNES_BACKUP = new JButton(RRConst.ITUNES_BACKUP);
 	private static JButton KEYCHAIN_DUMPER = new JButton(RRConst.KEYCHAIN_DUMPER);
 	private static JButton ABOUT = new JButton(RRConst.ABOUT);
+	private static JLabel iOS_13 = new JLabel(RRConst.iOS_13);
+	private static JLabel iOS_11 = new JLabel(RRConst.iOS_11);
 	private static InfoPlist[] plists = null;
 	private static boolean initialized = false;
 	public static void createDisplay() {
 		if (!initialized) {
 			Display.FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			Display.FRAME.setSize(550, 400);
-			Display.FRAME.setLayout(new BoxLayout(FRAME.getContentPane(), BoxLayout.Y_AXIS));
+			Display.FRAME.getContentPane().setLayout(new BoxLayout(FRAME.getContentPane(), BoxLayout.Y_AXIS));
 			Display.KEY_SALT_BUTTON.addActionListener(Display.CLASS_OBJ.new KeySaltButtonListener());
 			Display.FILE_BUTTON.addActionListener(Display.CLASS_OBJ.new FileButtonListener());
 			Display.SSH_BUTTON.addActionListener(Display.CLASS_OBJ.new SSHButtonListener());
@@ -37,25 +40,29 @@ public class Display {
 			initialized = true;
 		}
 		Display.FRAME.getContentPane().add(Display.TITLE);
+		Display.FRAME.getContentPane().add(Display.AUTHOR);
 		Display.FRAME.getContentPane().add(Display.DESC);
+		Display.FRAME.getContentPane().add(Display.ABOUT);
+		Display.FRAME.getContentPane().add(Display.iOS_11);
 		Display.FRAME.getContentPane().add(Display.KEY_SALT_BUTTON);
 		Display.FRAME.getContentPane().add(Display.FILE_BUTTON);
 		Display.FRAME.getContentPane().add(Display.SSH_BUTTON);
-		Display.FRAME.getContentPane().add(Display.KEYCHAIN_DUMPER);
 		Display.FRAME.getContentPane().add(Display.ITUNES_BACKUP);
-		Display.FRAME.getContentPane().add(Display.ABOUT);
+		Display.FRAME.getContentPane().add(Display.iOS_13);
+		Display.FRAME.getContentPane().add(Display.KEYCHAIN_DUMPER);
 		Display.FRAME.setVisible(true);
 	}
 	public class AboutListener implements ActionListener {
 		public void actionPerformed(ActionEvent ev) {
 			Display.FRAME.getContentPane().removeAll();
 			JLabel title = new JLabel(RRConst.FULL_NAME);
-			JLabel author = new JLabel("<html><body>by Alyx Ferrari<br/></body></html>");
+			JLabel author = new JLabel("by " + RRConst.AUTHOR);
 			JLabel slf4j = new JLabel("slf4j Copyright (c) 2004-2017 QOS.ch");
 			JLabel bcJava = new JLabel("bc-java Copyright (c) 2000-2019 The Legion of the Bouncy Castle Inc.");
 			JLabel sshj = new JLabel("sshj Copyright (c) 2010-2012 sshj contributors");
 			JLabel keychainDumper = new JLabel("keychain_dumper was written by ptoomey3 on GitHub");
 			JLabel backup = new JLabel("The iTunes backup idea was given to me by Reddit users u/Starwarsfan2099 and u/KuroAMK");
+			JLabel affiliation = new JLabel("This program is in no way affiliated with Apple, Inc.");
 			JButton back = new JButton("Back");
 			back.addActionListener(new BackListener());
 			Display.FRAME.getContentPane().add(title);
@@ -65,6 +72,7 @@ public class Display {
 			Display.FRAME.getContentPane().add(sshj);
 			Display.FRAME.getContentPane().add(keychainDumper);
 			Display.FRAME.getContentPane().add(backup);
+			Display.FRAME.getContentPane().add(affiliation);
 			Display.FRAME.getContentPane().add(back);
 			Display.refresh();
 		}
