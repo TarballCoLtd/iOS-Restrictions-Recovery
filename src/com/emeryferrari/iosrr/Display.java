@@ -187,15 +187,21 @@ public class Display {
 						Display.FRAME.getContentPane().add(new JLabel("Found Screen Time passcode! Passcode: " + password));
 						System.out.println("Found Screen Time passcode! Passcode: " + password);
 						Display.refresh();
+						JButton keychainOutput = new JButton("View Keychain dump");
+						keychainOutput.addActionListener(new KeychainOutputListener(keychain));
+						JPanel panel = new JPanel();
+						panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+						panel.add(keychainOutput);
 						JButton button = new JButton("Back");
 						button.addActionListener(new BackListener());
-						Display.FRAME.getContentPane().add(button);
+						panel.add(button);
+						Display.FRAME.getContentPane().add(panel);
 						Display.refresh();
 						JOptionPane.showMessageDialog(null, "Found Screen Time passcode! Passcode: " + password);
 					} catch (Exception ex) {
 						handleException(ex, true);
-						Display.FRAME.getContentPane().add(new JLabel("Failed to retrieve Screen Time passcode! If you're sure you've done everything correctly, create an issue on GitHub."));
-						Display.FRAME.getContentPane().add(new JLabel(ex.getClass().toString().split(" ")[1]+ ": " + ex.getMessage()));
+						Display.FRAME.getContentPane().add(new JLabel("<html><body><br/>Failed to retrieve Screen Time passcode!<br/>If you're sure you've done everything correctly, create an issue on GitHub.<br/>"));
+						Display.FRAME.getContentPane().add(new JLabel("<html><body><br/>" + ex.getClass().toString().split(" ")[1]+ ": " + ex.getMessage() + "</body></html>"));
 						JButton button = new JButton("Back");
 						button.addActionListener(new BackListener());
 						Display.FRAME.getContentPane().add(button);
@@ -203,6 +209,26 @@ public class Display {
 					}
 				}
 			}.start();
+		}
+	}
+	public class KeychainOutputListener implements ActionListener {
+		private String dump;
+		public KeychainOutputListener(String dump) {
+			this.dump = dump;
+		}
+		public void actionPerformed(ActionEvent ev) {
+			Display.FRAME.getContentPane().removeAll();
+			dump = "<html><body>" + dump + "</body></html>";
+			String[] dumpArr = dump.split("\n");
+			dump = "";
+			for (int i = 0; i < dumpArr.length; i++) {
+				dump += dumpArr[i] + "<br/>";
+			}
+			Display.FRAME.getContentPane().add(new JLabel("<html><body>Keychain dump:<br/></body></html>"));
+			Display.FRAME.getContentPane().add(new JLabel(dump));
+			JButton back = new JButton("Back to main menu");
+			back.addActionListener(new BackListener());
+			Display.FRAME.getContentPane().add(back);
 		}
 	}
 	public class ItunesBackupListener implements ActionListener {
@@ -222,7 +248,7 @@ public class Display {
 						backupPath += "AppData\\Roaming\\Apple Computer\\MobileSync\\Backup\\";
 					}
 				} else if (currentOS == OperatingSystem.MACOSMOJAVE || currentOS == OperatingSystem.MACOSCATALINA) {
-					
+					throw new Exception("macOS is not currently supported. Support will come in a future update.");
 				} else {
 					throw new Exception("Your OS is not supported because it is not possible to install iTunes on your OS.");
 				}
@@ -255,6 +281,10 @@ public class Display {
 				Display.FRAME.getContentPane().add(back);
 				Display.refresh();
 			} catch (Exception ex) {
+				if (ex.getClass().toString().split(" ")[1].equals("java.lang.IndexOutOfBoundsException")) {
+					Display.handleException(new Exception("Screen Time passcode could not be found in dump. Create an issue on GitHub that includes a summary of what you see in your Keychain dump if you're sure you've done everything correctly."), true);
+					Display.handleException(new Exception(""), true);
+				}
 				Display.handleException(ex, true);
 			}
 		}
