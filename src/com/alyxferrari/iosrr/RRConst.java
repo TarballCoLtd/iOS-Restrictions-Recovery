@@ -2,7 +2,7 @@ package com.alyxferrari.iosrr;
 public class RRConst {
 	private RRConst() {}
 	public static final String NAME = "iOS-Restrictions-Recovery";
-	public static final String VERSION = "v1.0 beta 1";
+	public static final String VERSION = "v1.0 beta 3";
 	public static final String AUTHOR = "Alyx Ferrari";
 	public static final String FULL_NAME = NAME + " " + VERSION;
 	public static final String TITLE = "<html><body><font size=\"5\">" + FULL_NAME + "</font></body></html>";

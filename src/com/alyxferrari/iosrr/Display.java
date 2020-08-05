@@ -102,7 +102,8 @@ public class Display {
 					Display.FRAME.getContentPane().removeAll();
 					String keychain = null;
 					try {
-						String ip = JOptionPane.showInputDialog("Device IP address? OpenSSH and SQLite 3.x must be installed on your device.");
+						JOptionPane.showMessageDialog(null, "Make sure your device meets the following conditions before proceeding:\nYour device must be jailbroken\nYour device must have an SSH server running\nYour device must have the \"SQLite 3.x\" package installed\nYour device is highly recommended to have a passcode (it may work without, but having one fixes a lot of issues)\nMake sure your device is unlocked and on the home screen throughout the whole process");
+						String ip = JOptionPane.showInputDialog("Device IP address?");
 						String portStr = JOptionPane.showInputDialog("Device SSH server port? (press enter to default to 22)");
 						int port = 22;
 						if (!portStr.equals("")) {
@@ -186,7 +187,7 @@ public class Display {
 						ssh2.authPassword("root", rootPass);
 						Session session2 = ssh2.startSession();
 						JOptionPane.showMessageDialog(null, "Please make sure your device is unlocked and on the home screen.");
-						Display.FRAME.getContentPane().add(new JLabel("Dumping your device's Keychain... (if this blocks, make sure your device is unlocked)"));
+						Display.FRAME.getContentPane().add(new JLabel("Dumping your device's Keychain... (authenticate with Touch ID/Face ID if asked)"));
 						System.out.println("Dumping your device's Keychain... (if this blocks, make sure your device is unlocked)");
 						Display.refresh();
 						Session.Command cmd = session2.exec("./../mobile/Documents/keychain_dumper");
@@ -195,7 +196,7 @@ public class Display {
 						Display.FRAME.getContentPane().add(new JLabel("Removing keychain_dumper from device..."));
 						System.out.println("Removing keychain_dumper from device...");
 						Display.refresh();
-						session2.exec("rm ./../mobile/Documents/keychain_dumper");
+						session2.exec("rm ../mobile/Documents/keychain_dumper");
 						Display.FRAME.getContentPane().add(new JLabel("Disconnecting..."));
 						System.out.println("Disconnecting...");
 						Display.refresh();
@@ -206,9 +207,9 @@ public class Display {
 						Display.refresh();
 						String[] list = keychain.split("ParentalControls")[1].split("\n");
 						String password = null;
-						for (int i = 0; i < 20; i++) {
-							if (list[i].startsWith("Keychain Data: ")) {
-								password = list[i].split(": ")[1];
+						for (int i = 0; i < (list.length > 1000 ? 1000 : list.length); i++) {
+							if (list[i].contains("Keychain Data: ")) {
+								password = list[i].split("Keychain Data: ")[1];
 								break;
 							}
 						}

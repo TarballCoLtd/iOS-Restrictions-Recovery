@@ -9,6 +9,7 @@ import javax.xml.parsers.*;
 public class RestrictionsRecovery {
 	private RestrictionsRecovery() {}
 	public static void main(String[] args) throws Exception {
+		System.setErr(System.out);
 		if (args.length == 0) {
 			Display.createDisplay();
 		} else {
