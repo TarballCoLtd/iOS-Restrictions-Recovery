@@ -1,4 +1,4 @@
-package com.emeryferrari.iosrr;
+package com.alyxferrari.iosrr;
 import java.security.*;
 import java.security.spec.*;
 import java.io.*;
@@ -66,7 +66,7 @@ public class RestrictionsRecovery {
 		}
 	}
 	public static void downloadViaSSH(String ip, int port, String password, boolean exit) throws IOException {
-		if (RestrictionsRecovery.identifyHostOS() != OperatingSystem.OTHER) {
+		if (RestrictionsRecovery.identifyHostOS() != OperatingSystemType.OTHER) {
 			SSHClient ssh = new SSHClient();
 			ssh.addHostKeyVerifier(new PromiscuousVerifier());
 			ssh.connect(ip, port);
@@ -81,35 +81,35 @@ public class RestrictionsRecovery {
 			CommandLineOutput.printUnsupportedOS();
 		}
 	}
-	public static OperatingSystem identifyHostOS() {
+	public static OperatingSystemType identifyHostOS() {
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.indexOf("win") >= 0) {
-			return OperatingSystem.WINDOWS;
+			return OperatingSystemType.WINDOWS;
 		} else if (os.indexOf("mac") >= 0) {
 			if (System.getProperty("os.version").indexOf("10.15") >= 0) {
-				return OperatingSystem.MACOSCATALINA;
+				return OperatingSystemType.MACOSCATALINA_OR_NEWER;
 			} else if (System.getProperty("os.version").indexOf("11.") >= 0) {
-				return OperatingSystem.MACOSCATALINA;
+				return OperatingSystemType.MACOSCATALINA_OR_NEWER;
 			} else {
-				return OperatingSystem.MACOSMOJAVE;
+				return OperatingSystemType.MACOSMOJAVE_OR_OLDER;
 			}
 		} else if (os.indexOf("nix") >= 0) {
-			return OperatingSystem.UNIX;
+			return OperatingSystemType.UNIX_BASED;
 		} else if (os.indexOf("nux") >= 0) {
-			return OperatingSystem.UNIX;
+			return OperatingSystemType.UNIX_BASED;
 		} else if (os.indexOf("aix") >= 0) {
-			return OperatingSystem.UNIX;
+			return OperatingSystemType.UNIX_BASED;
 		} else {
-			return OperatingSystem.OTHER;
+			return OperatingSystemType.OTHER;
 		}
 	}
 	public static void launchIproxy(int port, String password, boolean exit) throws IOException, SAXException, ParserConfigurationException, InvalidKeySpecException, NoSuchAlgorithmException {
 		ProcessBuilder builder = null;
-		if (RestrictionsRecovery.identifyHostOS() == OperatingSystem.MACOSMOJAVE || RestrictionsRecovery.identifyHostOS() == OperatingSystem.UNIX) {
+		if (RestrictionsRecovery.identifyHostOS() == OperatingSystemType.MACOSMOJAVE_OR_OLDER || RestrictionsRecovery.identifyHostOS() == OperatingSystemType.UNIX_BASED) {
 			builder = new ProcessBuilder("/bin/bash", "-c", "iproxy", "23", ""+port);
-		} else if (RestrictionsRecovery.identifyHostOS() == OperatingSystem.MACOSCATALINA) {
+		} else if (RestrictionsRecovery.identifyHostOS() == OperatingSystemType.MACOSCATALINA_OR_NEWER) {
 			builder = new ProcessBuilder("/bin/zsh", "-c", "iproxy", "23", ""+port);
-		} else if (RestrictionsRecovery.identifyHostOS() == OperatingSystem.WINDOWS) {
+		} else if (RestrictionsRecovery.identifyHostOS() == OperatingSystemType.WINDOWS) {
 			builder = new ProcessBuilder("cmd.exe", "/c", "iproxy", "23", ""+port); // MAKE SURE YOU HAVE IPROXY IN YOUR PATH ENVIRONMENT VARIABLE
 		} else {
 			CommandLineOutput.printUnsupportedOS();

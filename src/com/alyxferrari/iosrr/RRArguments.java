@@ -1,4 +1,4 @@
-package com.emeryferrari.iosrr;
+package com.alyxferrari.iosrr;
 public class RRArguments {
 	private final RequestType type;
 	private boolean iproxy;

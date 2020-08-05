@@ -1,4 +1,4 @@
-package com.emeryferrari.iosrr;
+package com.alyxferrari.iosrr;
 public class KeySaltPair {
 	private final String key;
 	private final String salt;

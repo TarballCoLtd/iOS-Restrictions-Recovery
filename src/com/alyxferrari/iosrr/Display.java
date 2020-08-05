@@ -1,4 +1,4 @@
-package com.emeryferrari.iosrr;
+package com.alyxferrari.iosrr;
 import javax.swing.*;
 import java.net.*;
 import java.awt.event.*;
@@ -58,12 +58,25 @@ public class Display {
 			Display.FRAME.getContentPane().removeAll();
 			JLabel title = new JLabel(RRConst.FULL_NAME);
 			JLabel author = new JLabel("by " + RRConst.AUTHOR);
-			JLabel slf4j = new JLabel("slf4j Copyright (c) 2004-2017 QOS.ch");
+			JLabel slf4j = new JLabel("<html><body><br/>slf4j Copyright (c) 2004-2017 QOS.ch</body></html>");
 			JLabel bcJava = new JLabel("bc-java Copyright (c) 2000-2019 The Legion of the Bouncy Castle Inc.");
 			JLabel sshj = new JLabel("sshj Copyright (c) 2010-2012 sshj contributors");
 			JLabel keychainDumper = new JLabel("keychain_dumper was written by ptoomey3 on GitHub");
 			JLabel backup = new JLabel("The iTunes backup idea was given to me by Reddit users u/Starwarsfan2099 and u/KuroAMK");
-			JLabel affiliation = new JLabel("This program is in no way affiliated with Apple, Inc.");
+			JLabel help = new JLabel("<html><body><br/>Testers:<br/>Jacob Ward (u/jacobward328)</body></html>");
+			JLabel paypal = new JLabel("<html><body><br/>Special thanks to my PayPal backers:<br/>Jacob Ward<br/>paypal.me/alyxferrari</body></html>");
+			OperatingSystemType ops = RestrictionsRecovery.identifyHostOS();
+			JLabel os = new JLabel();
+			String version = System.getProperty("os.version");
+			if (ops == OperatingSystemType.WINDOWS) {
+				os = new JLabel("<html><body><br/>Host OS: Windows " + version);
+			} else if (ops == OperatingSystemType.MACOSMOJAVE_OR_OLDER || ops == OperatingSystemType.MACOSCATALINA_OR_NEWER) {
+				os = new JLabel("<html><body><br/>Host OS: macOS " + version);
+			} else if (ops == OperatingSystemType.UNIX_BASED) {
+				os = new JLabel("<html><body><br/>Host OS: " + System.getProperty("os.name") + " " + version);
+			} else {
+				os = new JLabel("<html><body><br/>Host OS: Unknown");
+			}
 			JButton back = new JButton("Back");
 			back.addActionListener(new BackListener());
 			Display.FRAME.getContentPane().add(title);
@@ -73,7 +86,9 @@ public class Display {
 			Display.FRAME.getContentPane().add(sshj);
 			Display.FRAME.getContentPane().add(keychainDumper);
 			Display.FRAME.getContentPane().add(backup);
-			Display.FRAME.getContentPane().add(affiliation);
+			Display.FRAME.getContentPane().add(help);
+			Display.FRAME.getContentPane().add(paypal);
+			Display.FRAME.getContentPane().add(os);
 			Display.FRAME.getContentPane().add(back);
 			Display.refresh();
 		}
@@ -84,6 +99,7 @@ public class Display {
 				@Override
 				public void run() {
 					Display.FRAME.getContentPane().removeAll();
+					String keychain = null;
 					try {
 						String ip = JOptionPane.showInputDialog("Device IP address? OpenSSH and SQLite 3.x must be installed on your device.");
 						String portStr = JOptionPane.showInputDialog("Device SSH server port? (press enter to default to 22)");
@@ -98,10 +114,10 @@ public class Display {
 						File keychain_dumper = new File("keychain_dumper");
 						if (!keychain_dumper.exists()) {
 							Display.FRAME.getContentPane().add(new JLabel("Couldn't find keychain_dumper!"));
-							JLabel progress = new JLabel("Downloading keychain_dumper from GitHub...");
+							JLabel progress = new JLabel("Downloading keychain_dumper from alyxferrari.github.io...");
 							Display.FRAME.getContentPane().add(progress);
 							Display.refresh();
-							URL url = new URL("https://raw.githubusercontent.com/ptoomey3/Keychain-Dumper/master/keychain_dumper");
+							URL url = new URL("https://alyxferrari.github.io/iosrr/keychain_dumper");
 							InputStream is = url.openStream();
 							FileOutputStream fos = new FileOutputStream("keychain_dumper");
 							URLConnection connection = url.openConnection();
@@ -116,7 +132,61 @@ public class Display {
 							while ((b = is.read(data, 0, 1024)) != -1) {
 								fos.write(data, 0, b);
 								count += b;
-								progress.setText("Downloading keychain_dumper from GitHub... (" + count + " bytes / " + total + " bytes)");
+								progress.setText("Downloading keychain_dumper from alyxferrari.github.io... (" + count + " bytes / " + total + " bytes)");
+								Display.refresh();
+							}
+							fos.flush();
+							fos.close();
+						}
+						File updateEntitlements = new File("updateEntitlements.sh");
+						if (!updateEntitlements.exists()) {
+							Display.FRAME.getContentPane().add(new JLabel("Couldn't find updateEntitlements.sh!"));
+							JLabel progress = new JLabel("Downloading updateEntitlements.sh from GitHub...");
+							Display.FRAME.getContentPane().add(progress);
+							Display.refresh();
+							URL url = new URL("https://raw.githubusercontent.com/ptoomey3/Keychain-Dumper/master/updateEntitlements.sh");
+							InputStream is = url.openStream();
+							FileOutputStream fos = new FileOutputStream("updateEntitlements.sh");
+							URLConnection connection = url.openConnection();
+							if (connection instanceof HttpURLConnection) {
+								((HttpURLConnection)connection).setRequestMethod("HEAD");
+							}
+							connection.getInputStream();
+							int total = connection.getContentLength();
+							int b;
+							byte[] data = new byte[128];
+							int count = 0;
+							while ((b = is.read(data, 0, 1024)) != -1) {
+								fos.write(data, 0, b);
+								count += b;
+								progress.setText("Downloading updateEntitlements.sh from GitHub... (" + count + " bytes / " + total + " bytes)");
+								Display.refresh();
+							}
+							fos.flush();
+							fos.close();
+						}
+						File entitlements = new File("entitlements.xml");
+						if (!entitlements.exists()) {
+							Display.FRAME.getContentPane().add(new JLabel("Couldn't find entitlements.xml!"));
+							JLabel progress = new JLabel("Downloading entitlements.xml from GitHub...");
+							Display.FRAME.getContentPane().add(progress);
+							Display.refresh();
+							URL url = new URL("https://raw.githubusercontent.com/ptoomey3/Keychain-Dumper/master/entitlements.xml");
+							InputStream is = url.openStream();
+							FileOutputStream fos = new FileOutputStream("entitlements.xml");
+							URLConnection connection = url.openConnection();
+							if (connection instanceof HttpURLConnection) {
+								((HttpURLConnection)connection).setRequestMethod("HEAD");
+							}
+							connection.getInputStream();
+							int total = connection.getContentLength();
+							int b;
+							byte[] data = new byte[1];
+							int count = 0;
+							while ((b = is.read(data, 0, 1024)) != -1) {
+								fos.write(data, 0, b);
+								count += b;
+								progress.setText("Downloading entitlements.xml from GitHub... (" + count + " bytes / " + total + " bytes)");
 								Display.refresh();
 							}
 							fos.flush();
@@ -136,11 +206,34 @@ public class Display {
 						Display.refresh();
 						System.out.println("Uploading keychain_dumper to device...");
 						ssh.newSCPFileTransfer().upload("keychain_dumper", "/User/Documents/keychain_dumper");
+						Display.FRAME.getContentPane().add(new JLabel("Uploading updateEntitlements.sh to device..."));
+						Display.refresh();
+						System.out.println("Uploading updateEntitlements.sh to device...");
+						ssh.newSCPFileTransfer().upload("updateEntitlements.sh", "/User/Documents/updateEntitlements.sh");
+						Display.FRAME.getContentPane().add(new JLabel("Uploading entitlements.xml to device..."));
+						Display.refresh();
+						System.out.println("Uploading entitlements.xml to device...");
+						ssh.newSCPFileTransfer().upload("entitlements.xml", "/User/Documents/entitlements.xml");
 						Session session = ssh.startSession();
 						Display.FRAME.getContentPane().add(new JLabel("Giving keychain_dumper '+x' permissions..."));
 						System.out.println("Giving keychain_dumper '+x' permissions...");
 						Display.refresh();
 						session.exec("chmod +x /User/Documents/keychain_dumper");
+						session = ssh.startSession();
+						Display.FRAME.getContentPane().add(new JLabel("Giving updateEntitlements.sh '+x' permissions..."));
+						Display.refresh();
+						System.out.println("Giving updateEntitlements.sh '+x' permissions...");
+						session.exec("chmod +x /User/Documents/updateEntitlements.sh");
+						session = ssh.startSession();
+						Display.FRAME.getContentPane().add(new JLabel("Running updateEntitlements.sh..."));
+						Display.refresh();
+						System.out.println("Running updateEntitlements.sh...");
+						session.exec("./../mobile/Documents/updateEntitlements.sh");
+						session = ssh.startSession();
+						Display.FRAME.getContentPane().add(new JLabel("Assigning entitlements to keychain_dumper..."));
+						Display.refresh();
+						System.out.println("Assigning entitlements to keychain_dumper...");
+						session.exec("ldid -S/User/Documents/entitlements.xml /User/Documents/keychain_dumper");
 						Display.FRAME.getContentPane().add(new JLabel("Disconnecting..."));
 						System.out.println("Disconnecting...");
 						Display.refresh();
@@ -162,7 +255,7 @@ public class Display {
 						System.out.println("Dumping your device's Keychain... (if this blocks, make sure your device is unlocked)");
 						Display.refresh();
 						Session.Command cmd = session2.exec("./../mobile/Documents/keychain_dumper");
-						String keychain = IOUtils.readFully(cmd.getInputStream()).toString();
+						keychain = IOUtils.readFully(cmd.getInputStream()).toString();
 						session2 = ssh2.startSession();
 						Display.FRAME.getContentPane().add(new JLabel("Removing keychain_dumper from device..."));
 						System.out.println("Removing keychain_dumper from device...");
@@ -199,13 +292,23 @@ public class Display {
 						Display.refresh();
 						JOptionPane.showMessageDialog(null, "Found Screen Time passcode! Passcode: " + password);
 					} catch (Exception ex) {
-						handleException(ex, true);
-						Display.FRAME.getContentPane().add(new JLabel("<html><body><br/>Failed to retrieve Screen Time passcode!<br/>If you're sure you've done everything correctly, create an issue on GitHub.<br/>"));
-						Display.FRAME.getContentPane().add(new JLabel("<html><body><br/>" + ex.getClass().toString().split(" ")[1]+ ": " + ex.getMessage() + "</body></html>"));
+						Display.FRAME.getContentPane().removeAll();
+						Display.FRAME.getContentPane().add(new JLabel("Failed to retrieve Screen Time passcode!"));
+						Display.FRAME.getContentPane().add(new JLabel("If you're sure you've done everything correctly, create an issue on GitHub."));
+						Display.FRAME.getContentPane().add(new JLabel(ex.getClass().toString().split(" ")[1]+ ": " + ex.getMessage()));
+						JPanel panel = new JPanel();
+						panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 						JButton button = new JButton("Back");
 						button.addActionListener(new BackListener());
-						Display.FRAME.getContentPane().add(button);
+						if (!(keychain == null)) {
+							JButton keychainView = new JButton("View failed Keychain dump");
+							keychainView.addActionListener(new KeychainOutputListener(keychain));
+							panel.add(keychainView);
+						}
+						panel.add(button);
+						Display.FRAME.getContentPane().add(panel);
 						Display.refresh();
+						Display.handleException(ex, true);
 					}
 				}
 			}.start();
@@ -229,14 +332,15 @@ public class Display {
 			JButton back = new JButton("Back to main menu");
 			back.addActionListener(new BackListener());
 			Display.FRAME.getContentPane().add(back);
+			Display.refresh();
 		}
 	}
 	public class ItunesBackupListener implements ActionListener {
 		public void actionPerformed(ActionEvent ev) {
 			try {
-				OperatingSystem currentOS = RestrictionsRecovery.identifyHostOS();
+				OperatingSystemType currentOS = RestrictionsRecovery.identifyHostOS();
 				String backupPath = System.getProperty("user.home") + "\\";
-				if (currentOS == OperatingSystem.WINDOWS) {
+				if (currentOS == OperatingSystemType.WINDOWS) {
 					String y = "n";
 					File uwpiTunes = new File(backupPath + "AppData\\Local\\Microsoft\\WindowsApps\\AppleInc.iTunes_nzyj5cx40ttqa");
 					if (uwpiTunes.exists()) {
@@ -247,7 +351,7 @@ public class Display {
 					} else {
 						backupPath += "AppData\\Roaming\\Apple Computer\\MobileSync\\Backup\\";
 					}
-				} else if (currentOS == OperatingSystem.MACOSMOJAVE || currentOS == OperatingSystem.MACOSCATALINA) {
+				} else if (currentOS == OperatingSystemType.MACOSMOJAVE_OR_OLDER || currentOS == OperatingSystemType.MACOSCATALINA_OR_NEWER) {
 					throw new Exception("macOS is not currently supported. Support will come in a future update.");
 				} else {
 					throw new Exception("Your OS is not supported because it is not possible to install iTunes on your OS.");

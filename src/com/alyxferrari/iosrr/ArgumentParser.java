@@ -1,4 +1,4 @@
-package com.emeryferrari.iosrr;
+package com.alyxferrari.iosrr;
 public class ArgumentParser {
 	private ArgumentParser() {}
 	public static RRArguments parseArguments(String[] args) {
