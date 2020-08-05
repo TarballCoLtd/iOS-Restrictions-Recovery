@@ -120,12 +120,27 @@ public class Display {
 						File entitlements = new File("entitlements.xml");
 						URL entitlementsURL = new URL("https://raw.githubusercontent.com/ptoomey3/Keychain-Dumper/master/entitlements.xml");
 						if (!keychain_dumper.exists()) {
+							Display.FRAME.getContentPane().add(new JLabel("Couldn't find keychain_dumper!"));
+							Display.FRAME.getContentPane().add(new JLabel("Downloading keychain_dumper from alyxferrari.github.io..."));
+							System.out.println("Couldn't find keychain_dumper!");
+							System.out.println("Downloading keychain_dumper from alyxferrari.github.io...");
+							Display.refresh();
 							FileUtils.copyURLToFile(keychain_dumperURL, keychain_dumper);
 						}
 						if (!updateEntitlements.exists()) {
+							Display.FRAME.getContentPane().add(new JLabel("Couldn't find updateEntitlements.sh!"));
+							Display.FRAME.getContentPane().add(new JLabel("Downloading updateEntitlements.sh from Keychain-Dumper's GitHub repo..."));
+							System.out.println("Couldn't find updateEntitlements.sh!");
+							System.out.println("Downloading updateEntitlements.sh from Keychain-Dumper's GitHub repo...");
+							Display.refresh();
 							FileUtils.copyURLToFile(updateEntitlementsURL, updateEntitlements);
 						}
 						if (!entitlements.exists()) {
+							Display.FRAME.getContentPane().add(new JLabel("Couldn't find entitlements.xml!"));
+							Display.FRAME.getContentPane().add(new JLabel("Downloading entitlements.xml from Keychain-Dumper's GitHub repo..."));
+							System.out.println("Couldn't find entitlements.xml!");
+							System.out.println("Downloading entitlements.xml from Keychain-Dumper's GitHub repo...");
+							Display.refresh();
 							FileUtils.copyURLToFile(entitlementsURL, entitlements);
 						}
 						Display.FRAME.getContentPane().add(new JLabel("Connecting to " + ip + ":" + port + " over SSH..."));
