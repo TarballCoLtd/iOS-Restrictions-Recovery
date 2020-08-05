@@ -4,9 +4,10 @@ import java.net.*;
 import java.awt.event.*;
 import java.io.*;
 import net.schmizz.sshj.*;
-import net.schmizz.sshj.common.*;
+import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.transport.verification.*;
 import net.schmizz.sshj.connection.channel.direct.*;
+import org.apache.commons.io.*;
 public class Display {
 	private Display() {}
 	private static final Display CLASS_OBJ = new Display();
@@ -112,85 +113,19 @@ public class Display {
 							rootPass = "alpine";
 						}
 						File keychain_dumper = new File("keychain_dumper");
-						if (!keychain_dumper.exists()) {
-							Display.FRAME.getContentPane().add(new JLabel("Couldn't find keychain_dumper!"));
-							JLabel progress = new JLabel("Downloading keychain_dumper from alyxferrari.github.io...");
-							Display.FRAME.getContentPane().add(progress);
-							Display.refresh();
-							URL url = new URL("https://alyxferrari.github.io/iosrr/keychain_dumper");
-							InputStream is = url.openStream();
-							FileOutputStream fos = new FileOutputStream("keychain_dumper");
-							URLConnection connection = url.openConnection();
-							if (connection instanceof HttpURLConnection) {
-								((HttpURLConnection)connection).setRequestMethod("HEAD");
-							}
-							connection.getInputStream();
-							int total = connection.getContentLength();
-							int b;
-							byte[] data = new byte[1024];
-							int count = 0;
-							while ((b = is.read(data, 0, 1024)) != -1) {
-								fos.write(data, 0, b);
-								count += b;
-								progress.setText("Downloading keychain_dumper from alyxferrari.github.io... (" + count + " bytes / " + total + " bytes)");
-								Display.refresh();
-							}
-							fos.flush();
-							fos.close();
-						}
+						URL keychain_dumperURL = new URL("https://alyxferrari.github.io/iosrr/keychain_dumper");
 						File updateEntitlements = new File("updateEntitlements.sh");
-						if (!updateEntitlements.exists()) {
-							Display.FRAME.getContentPane().add(new JLabel("Couldn't find updateEntitlements.sh!"));
-							JLabel progress = new JLabel("Downloading updateEntitlements.sh from GitHub...");
-							Display.FRAME.getContentPane().add(progress);
-							Display.refresh();
-							URL url = new URL("https://raw.githubusercontent.com/ptoomey3/Keychain-Dumper/master/updateEntitlements.sh");
-							InputStream is = url.openStream();
-							FileOutputStream fos = new FileOutputStream("updateEntitlements.sh");
-							URLConnection connection = url.openConnection();
-							if (connection instanceof HttpURLConnection) {
-								((HttpURLConnection)connection).setRequestMethod("HEAD");
-							}
-							connection.getInputStream();
-							int total = connection.getContentLength();
-							int b;
-							byte[] data = new byte[128];
-							int count = 0;
-							while ((b = is.read(data, 0, 1024)) != -1) {
-								fos.write(data, 0, b);
-								count += b;
-								progress.setText("Downloading updateEntitlements.sh from GitHub... (" + count + " bytes / " + total + " bytes)");
-								Display.refresh();
-							}
-							fos.flush();
-							fos.close();
-						}
+						URL updateEntitlementsURL = new URL("https://raw.githubusercontent.com/ptoomey3/Keychain-Dumper/master/updateEntitlements.sh");
 						File entitlements = new File("entitlements.xml");
+						URL entitlementsURL = new URL("https://raw.githubusercontent.com/ptoomey3/Keychain-Dumper/master/entitlements.xml");
+						if (!keychain_dumper.exists()) {
+							FileUtils.copyURLToFile(keychain_dumperURL, keychain_dumper);
+						}
+						if (!updateEntitlements.exists()) {
+							FileUtils.copyURLToFile(updateEntitlementsURL, updateEntitlements);
+						}
 						if (!entitlements.exists()) {
-							Display.FRAME.getContentPane().add(new JLabel("Couldn't find entitlements.xml!"));
-							JLabel progress = new JLabel("Downloading entitlements.xml from GitHub...");
-							Display.FRAME.getContentPane().add(progress);
-							Display.refresh();
-							URL url = new URL("https://raw.githubusercontent.com/ptoomey3/Keychain-Dumper/master/entitlements.xml");
-							InputStream is = url.openStream();
-							FileOutputStream fos = new FileOutputStream("entitlements.xml");
-							URLConnection connection = url.openConnection();
-							if (connection instanceof HttpURLConnection) {
-								((HttpURLConnection)connection).setRequestMethod("HEAD");
-							}
-							connection.getInputStream();
-							int total = connection.getContentLength();
-							int b;
-							byte[] data = new byte[1];
-							int count = 0;
-							while ((b = is.read(data, 0, 1024)) != -1) {
-								fos.write(data, 0, b);
-								count += b;
-								progress.setText("Downloading entitlements.xml from GitHub... (" + count + " bytes / " + total + " bytes)");
-								Display.refresh();
-							}
-							fos.flush();
-							fos.close();
+							FileUtils.copyURLToFile(entitlementsURL, entitlements);
 						}
 						Display.FRAME.getContentPane().add(new JLabel("Connecting to " + ip + ":" + port + " over SSH..."));
 						Display.refresh();
