@@ -211,7 +211,17 @@ public class Display {
 						Display.FRAME.getContentPane().add(new JLabel("Removing keychain_dumper from device..."));
 						System.out.println("Removing keychain_dumper from device...");
 						Display.refresh();
-						session2.exec("rm ../mobile/Documents/keychain_dumper");
+						session2.exec("rm /User/Documents/keychain_dumper");
+						session2 = ssh2.startSession();
+						Display.FRAME.getContentPane().add(new JLabel("Removing updateEntitlements.sh from device..."));
+						System.out.println("Removing updateEntitlements.sh from device...");
+						Display.refresh();
+						session2.exec("rm /User/Documents/updateEntitlements.sh");
+						session2 = ssh2.startSession();
+						Display.FRAME.getContentPane().add(new JLabel("Removing entitlements.xml from device..."));
+						System.out.println("Removing entitlements.xml from device...");
+						Display.refresh();
+						session2.exec("rm /User/Documents/entitlements.xml");
 						Display.FRAME.getContentPane().add(new JLabel("Disconnecting..."));
 						System.out.println("Disconnecting...");
 						Display.refresh();
