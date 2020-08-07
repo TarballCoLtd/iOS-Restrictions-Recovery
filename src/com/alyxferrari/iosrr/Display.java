@@ -102,7 +102,7 @@ public class Display {
 					Display.FRAME.getContentPane().removeAll();
 					String keychain = null;
 					try {
-						JOptionPane.showMessageDialog(null, "Make sure your device meets the following conditions before proceeding:\nYour device must be jailbroken\nYour device must have an SSH server running\nYour device must have the \"SQLite 3.x\" package installed\nYour device is highly recommended to have a passcode (it may work without, but having one fixes a lot of issues)\nMake sure your device is unlocked and on the home screen throughout the whole process");
+						JOptionPane.showMessageDialog(null, "Make sure your device meets the following conditions before proceeding:\nYour device must be jailbroken\nYour device must have an SSH server running\nYour device must have the \"SQLite 3.x\" package installed from Sam Bingner's repo\nYour device is highly recommended to have a passcode (it may work without, but having one fixes a lot of issues)\nMake sure your device is unlocked and on the home screen throughout the whole process");
 						String ip = JOptionPane.showInputDialog("Device IP address?");
 						String portStr = JOptionPane.showInputDialog("Device SSH server port? (press enter to default to 22)");
 						int port = 22;

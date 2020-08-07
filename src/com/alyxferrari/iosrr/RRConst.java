@@ -16,6 +16,6 @@ public class RRConst {
 	public static final String ITUNES_BACKUP_12 = "From encrypted iTunes backup (iOS 12 only)";
 	public static final String KEYCHAIN_DUMPER = "From device via SSH";
 	public static final String ABOUT = "About/Credits";
-	public static final String iOS_13 = "<html><body><br/>iOS 12 and iOS 13:</body></html>";
+	public static final String iOS_13 = "<html><body><br/>iOS 12.0 through iOS 13.4.5:</body></html>";
 	public static final String iOS_11 = "<html><body><br/>iOS 7 through iOS 11:</body></html>";
 }
