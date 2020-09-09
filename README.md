@@ -19,7 +19,7 @@ The code for the iTunes backup feature was loosely based on [this GitHub project
 All dependencies are handled by Maven.<br/>
 sshj<br/>
 slf4j<br/>
-ed25519><br/>
+ed25519<br/>
 bcprov-jdk15on<br/>
 bcpkix-jdk15on<br/>
 jzlib
