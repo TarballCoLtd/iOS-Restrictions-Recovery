@@ -1,7 +1,7 @@
 # iOS-Restrictions-Recovery
 
 by Alyx Ferrari<br/>
-A GUI/CLI tool that can find the Restrictions or Screen Time passcode of any iOS device running iOS 7.0 through iOS 13.4.1.
+A GUI/CLI tool that can find the Restrictions or Screen Time passcode of any iOS device running iOS 7.0 through iOS 13.3.1.
 
 ## Credit
 
