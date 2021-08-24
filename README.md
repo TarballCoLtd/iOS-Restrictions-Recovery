@@ -1,7 +1,7 @@
 # iOS-Restrictions-Recovery
 
 by Alyx Ferrari<br/>
-A GUI/CLI tool that can find the Restrictions or Screen Time passcode of any iOS device running iOS 7.0 through iOS 13.3.1.
+A GUI/CLI tool that can find the Restrictions or Screen Time passcode of any iOS device running iOS 7.0 through iOS 12.4.9. iOS 13, 14, and 15 *should* work, but Keychain-Dumper doesn't work consistently on these versions.
 
 ## Credit
 
@@ -24,7 +24,7 @@ jzlib
 ## Compilation/Execution
 
 To run this program, you can either download the JAR from the Releases tab or generate one yourself with Maven.<br/>
-OpenSSH is required to use all iOS 12-13 features and the iOS 7.0-11.4.1 SSH features. If you're using checkra1n, iproxy will work as an alternative. If you're using any other jailbreak, OpenSSH is available on the default repos.
+OpenSSH is required to use all iOS 12-15 features and the iOS 7.0-11.4.1 SSH features. If you're using checkra1n, iproxy will work as an alternative. If you're using any other jailbreak, OpenSSH is available on the default repos.
 
 ## Contacting me
 
