@@ -340,7 +340,7 @@ public class Display {
 				Display.FRAME.getContentPane().add(back);
 				Display.refresh();
 			} catch (Exception ex) {
-				if (ex.getClass().toString().split(" ")[1].equals("java.lang.IndexOutOfBoundsException")) {
+				if (ex instanceof IndexOutOfBoundsException) {
 					Display.handleException(new Exception("Screen Time passcode could not be found in dump. Create an issue on GitHub that includes a summary of what you see in your Keychain dump if you're sure you've done everything correctly."), true);
 					Display.handleException(new Exception(""), true);
 				}
@@ -504,7 +504,7 @@ public class Display {
 	private static void handleException(Exception ex, boolean message) {
 		ex.printStackTrace();
 		if (message) {
-			JOptionPane.showMessageDialog(null, "Error: " + ex.getClass().toString().split(" ")[1] + ": " + ex.getMessage(), "An exception has occurred", 0);
+			JOptionPane.showMessageDialog(null, "Error: " + ex.getClass().getName() + ": " + ex.getMessage(), "An exception has occurred", 0);
 		}
 	}
 }
