@@ -91,6 +91,8 @@ public class RestrictionsRecovery {
 				return OperatingSystemType.MACOS_CATALINA_OR_NEWER;
 			} else if (System.getProperty("os.version").indexOf("11.") >= 0) {
 				return OperatingSystemType.MACOS_CATALINA_OR_NEWER;
+			} else if (System.getProperty("os.version").indexOf("12.") >= 0) {
+				return OperatingSystemType.MACOS_CATALINA_OR_NEWER;
 			} else {
 				return OperatingSystemType.MACOS_MOJAVE_OR_OLDER;
 			}
