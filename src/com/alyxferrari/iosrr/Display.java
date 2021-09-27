@@ -100,7 +100,7 @@ public class Display {
 					Display.FRAME.getContentPane().removeAll();
 					String keychain = null;
 					try {
-						JOptionPane.showMessageDialog(null, "Make sure your device meets the following conditions before proceeding:\nYour device must be jailbroken\nYour device must have an SSH server running\nYour device must have the \"SQLite 3.x\" package installed from Sam Bingner's repo\nYour device is highly recommended to have a passcode (it may work without, but having one fixes a lot of issues)\nMake sure your device is unlocked and on the home screen throughout the whole process");
+						JOptionPane.showMessageDialog(null, "Make sure your device meets the following conditions before proceeding:\nYour device must be jailbroken\nYour device must have an SSH server running\nYour device must have the \"SQLite 3.x\" package installed from Sam Bingner's repo\nYour device is highly recommended to have a passcode and fingerprint/face (it may work without, but having one fixes a lot of issues)\nMake sure your device is unlocked and on the home screen throughout the whole process");
 						String ip = JOptionPane.showInputDialog("Device IP address?");
 						String portStr = JOptionPane.showInputDialog("Device SSH server port? (press enter to default to 22)");
 						int port = 22;
@@ -112,11 +112,9 @@ public class Display {
 							rootPass = "alpine";
 						}
 						File keychain_dumper = new File("keychain_dumper");
-						URL keychain_dumperURL = new URL("https://alyxferrari.github.io/iosrr/keychain_dumper");
-						File updateEntitlements = new File("updateEntitlements.sh");
-						URL updateEntitlementsURL = new URL("https://raw.githubusercontent.com/ptoomey3/Keychain-Dumper/master/updateEntitlements.sh");
+						URL keychain_dumperURL = new URL("https://alyxferrari.github.io/keychain_dumper");
 						File entitlements = new File("entitlements.xml");
-						URL entitlementsURL = new URL("https://raw.githubusercontent.com/ptoomey3/Keychain-Dumper/master/entitlements.xml");
+						URL entitlementsURL = new URL("https://alyxferrari.github.io/ent.xml");
 						if (!keychain_dumper.exists()) {
 							Display.FRAME.getContentPane().add(new JLabel("Couldn't find keychain_dumper!"));
 							Display.FRAME.getContentPane().add(new JLabel("Downloading keychain_dumper from alyxferrari.github.io..."));
@@ -125,19 +123,11 @@ public class Display {
 							Display.refresh();
 							FileUtils.copyURLToFile(keychain_dumperURL, keychain_dumper);
 						}
-						if (!updateEntitlements.exists()) {
-							Display.FRAME.getContentPane().add(new JLabel("Couldn't find updateEntitlements.sh!"));
-							Display.FRAME.getContentPane().add(new JLabel("Downloading updateEntitlements.sh from Keychain-Dumper's GitHub repo..."));
-							System.out.println("Couldn't find updateEntitlements.sh!");
-							System.out.println("Downloading updateEntitlements.sh from Keychain-Dumper's GitHub repo...");
-							Display.refresh();
-							FileUtils.copyURLToFile(updateEntitlementsURL, updateEntitlements);
-						}
 						if (!entitlements.exists()) {
-							Display.FRAME.getContentPane().add(new JLabel("Couldn't find entitlements.xml!"));
-							Display.FRAME.getContentPane().add(new JLabel("Downloading entitlements.xml from Keychain-Dumper's GitHub repo..."));
+							Display.FRAME.getContentPane().add(new JLabel("Couldn't find ent.xml!"));
+							Display.FRAME.getContentPane().add(new JLabel("Downloading ent.xml from alyxferrari.github.io..."));
 							System.out.println("Couldn't find entitlements.xml!");
-							System.out.println("Downloading entitlements.xml from Keychain-Dumper's GitHub repo...");
+							System.out.println("Downloading entitlements.xml from alyxferrari.github.io...");
 							Display.refresh();
 							FileUtils.copyURLToFile(entitlementsURL, entitlements);
 						}
@@ -155,34 +145,19 @@ public class Display {
 						Display.refresh();
 						System.out.println("Uploading keychain_dumper to device...");
 						ssh.newSCPFileTransfer().upload("keychain_dumper", "/User/Documents/keychain_dumper");
-						Display.FRAME.getContentPane().add(new JLabel("Uploading updateEntitlements.sh to device..."));
 						Display.refresh();
-						System.out.println("Uploading updateEntitlements.sh to device...");
-						ssh.newSCPFileTransfer().upload("updateEntitlements.sh", "/User/Documents/updateEntitlements.sh");
-						Display.FRAME.getContentPane().add(new JLabel("Uploading entitlements.xml to device..."));
-						Display.refresh();
-						System.out.println("Uploading entitlements.xml to device...");
-						ssh.newSCPFileTransfer().upload("entitlements.xml", "/User/Documents/entitlements.xml");
+						System.out.println("Uploading ent.xml to device...");
+						ssh.newSCPFileTransfer().upload("ent.xml", "/User/Documents/ent.xml");
 						Session session = ssh.startSession();
 						Display.FRAME.getContentPane().add(new JLabel("Giving keychain_dumper '+x' permissions..."));
 						System.out.println("Giving keychain_dumper '+x' permissions...");
 						Display.refresh();
 						session.exec("chmod +x /User/Documents/keychain_dumper");
 						session = ssh.startSession();
-						Display.FRAME.getContentPane().add(new JLabel("Giving updateEntitlements.sh '+x' permissions..."));
-						Display.refresh();
-						System.out.println("Giving updateEntitlements.sh '+x' permissions...");
-						session.exec("chmod +x /User/Documents/updateEntitlements.sh");
-						session = ssh.startSession();
-						Display.FRAME.getContentPane().add(new JLabel("Running updateEntitlements.sh..."));
-						Display.refresh();
-						System.out.println("Running updateEntitlements.sh...");
-						session.exec("./../mobile/Documents/updateEntitlements.sh");
-						session = ssh.startSession();
 						Display.FRAME.getContentPane().add(new JLabel("Assigning entitlements to keychain_dumper..."));
 						Display.refresh();
 						System.out.println("Assigning entitlements to keychain_dumper...");
-						session.exec("ldid -S/User/Documents/entitlements.xml /User/Documents/keychain_dumper");
+						session.exec("ldid -S/User/Documents/ent.xml /User/Documents/keychain_dumper");
 						Display.FRAME.getContentPane().add(new JLabel("Disconnecting..."));
 						System.out.println("Disconnecting...");
 						Display.refresh();
@@ -199,8 +174,8 @@ public class Display {
 						Display.refresh();
 						ssh2.authPassword("root", rootPass);
 						Session session2 = ssh2.startSession();
-						JOptionPane.showMessageDialog(null, "Please make sure your device is unlocked and on the home screen.");
-						Display.FRAME.getContentPane().add(new JLabel("Dumping your device's Keychain... (authenticate with Touch ID/Face ID if asked)"));
+						JOptionPane.showMessageDialog(null, "Please make sure your device is unlocked and on the home screen.\nBe prepared to authenticate with your fingerprint or face.");
+						Display.FRAME.getContentPane().add(new JLabel("Dumping your device's Keychain... (authenticate with Touch ID or Face ID if asked)"));
 						System.out.println("Dumping your device's Keychain... (if this blocks, make sure your device is unlocked)");
 						Display.refresh();
 						Session.Command cmd = session2.exec("./../mobile/Documents/keychain_dumper");
@@ -211,15 +186,10 @@ public class Display {
 						Display.refresh();
 						session2.exec("rm /User/Documents/keychain_dumper");
 						session2 = ssh2.startSession();
-						Display.FRAME.getContentPane().add(new JLabel("Removing updateEntitlements.sh from device..."));
-						System.out.println("Removing updateEntitlements.sh from device...");
+						Display.FRAME.getContentPane().add(new JLabel("Removing ent.xml from device..."));
+						System.out.println("Removing ent.xml from device...");
 						Display.refresh();
-						session2.exec("rm /User/Documents/updateEntitlements.sh");
-						session2 = ssh2.startSession();
-						Display.FRAME.getContentPane().add(new JLabel("Removing entitlements.xml from device..."));
-						System.out.println("Removing entitlements.xml from device...");
-						Display.refresh();
-						session2.exec("rm /User/Documents/entitlements.xml");
+						session2.exec("rm /User/Documents/ent.xml");
 						Display.FRAME.getContentPane().add(new JLabel("Disconnecting..."));
 						System.out.println("Disconnecting...");
 						Display.refresh();
@@ -230,7 +200,7 @@ public class Display {
 						Display.refresh();
 						String[] list = keychain.split("ParentalControls")[1].split("\n");
 						String password = null;
-						for (int i = 0; i < (list.length > 1000 ? 1000 : list.length); i++) {
+						for (int i = 0; i < (list.length > 20 ? 20 : list.length); i++) {
 							if (list[i].contains("Keychain Data: ")) {
 								password = list[i].split("Keychain Data: ")[1];
 								break;
