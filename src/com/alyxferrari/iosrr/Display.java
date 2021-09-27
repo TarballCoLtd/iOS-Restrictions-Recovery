@@ -29,7 +29,7 @@ public class Display {
 	public static void createDisplay() {
 		if (!initialized) {
 			Display.FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			Display.FRAME.setSize(550, 400);
+			Display.FRAME.setSize(800, 600);
 			Display.FRAME.getContentPane().setLayout(new BoxLayout(FRAME.getContentPane(), BoxLayout.Y_AXIS));
 			Display.KEY_SALT_BUTTON.addActionListener(Display.CLASS_OBJ.new KeySaltButtonListener());
 			Display.FILE_BUTTON.addActionListener(Display.CLASS_OBJ.new FileButtonListener());
@@ -113,7 +113,7 @@ public class Display {
 						}
 						File keychain_dumper = new File("keychain_dumper");
 						URL keychain_dumperURL = new URL("https://alyxferrari.github.io/keychain_dumper");
-						File entitlements = new File("entitlements.xml");
+						File entitlements = new File("ent.xml");
 						URL entitlementsURL = new URL("https://alyxferrari.github.io/ent.xml");
 						if (!keychain_dumper.exists()) {
 							Display.FRAME.getContentPane().add(new JLabel("Couldn't find keychain_dumper!"));
@@ -213,7 +213,7 @@ public class Display {
 						keychainOutput.addActionListener(new KeychainOutputListener(keychain));
 						JPanel panel = new JPanel();
 						panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-						panel.add(keychainOutput);
+						//panel.add(keychainOutput);
 						JButton button = new JButton("Back");
 						button.addActionListener(new BackListener());
 						panel.add(button);
@@ -232,7 +232,7 @@ public class Display {
 						if (!(keychain == null)) {
 							JButton keychainView = new JButton("View failed Keychain dump");
 							keychainView.addActionListener(new KeychainOutputListener(keychain));
-							panel.add(keychainView);
+							//panel.add(keychainView);
 						}
 						panel.add(button);
 						Display.FRAME.getContentPane().add(panel);
@@ -249,6 +249,14 @@ public class Display {
 			this.dump = dump;
 		}
 		public void actionPerformed(ActionEvent ev) {
+			try {
+				PrintWriter writer = new PrintWriter("keychainoutput.txt");
+				writer.println(dump);
+				writer.flush();
+				writer.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
 			Display.FRAME.getContentPane().removeAll();
 			dump = "<html><body>" + dump + "</body></html>";
 			String[] dumpArr = dump.split("\n");
