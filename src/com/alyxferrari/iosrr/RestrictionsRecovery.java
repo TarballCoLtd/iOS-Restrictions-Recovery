@@ -88,27 +88,27 @@ public class RestrictionsRecovery {
 			return OperatingSystemType.WINDOWS;
 		} else if (os.indexOf("mac") >= 0) {
 			if (System.getProperty("os.version").indexOf("10.15") >= 0) {
-				return OperatingSystemType.MACOSCATALINA_OR_NEWER;
+				return OperatingSystemType.MACOS_CATALINA_OR_NEWER;
 			} else if (System.getProperty("os.version").indexOf("11.") >= 0) {
-				return OperatingSystemType.MACOSCATALINA_OR_NEWER;
+				return OperatingSystemType.MACOS_CATALINA_OR_NEWER;
 			} else {
-				return OperatingSystemType.MACOSMOJAVE_OR_OLDER;
+				return OperatingSystemType.MACOS_MOJAVE_OR_OLDER;
 			}
 		} else if (os.indexOf("nix") >= 0) {
-			return OperatingSystemType.UNIX_BASED;
+			return OperatingSystemType.UNIX_LIKE;
 		} else if (os.indexOf("nux") >= 0) {
-			return OperatingSystemType.UNIX_BASED;
+			return OperatingSystemType.UNIX_LIKE;
 		} else if (os.indexOf("aix") >= 0) {
-			return OperatingSystemType.UNIX_BASED;
+			return OperatingSystemType.UNIX_LIKE;
 		} else {
 			return OperatingSystemType.OTHER;
 		}
 	}
 	public static void launchIproxy(int port, String password, boolean exit) throws IOException, SAXException, ParserConfigurationException, InvalidKeySpecException, NoSuchAlgorithmException {
 		ProcessBuilder builder = null;
-		if (RestrictionsRecovery.identifyHostOS() == OperatingSystemType.MACOSMOJAVE_OR_OLDER || RestrictionsRecovery.identifyHostOS() == OperatingSystemType.UNIX_BASED) {
+		if (RestrictionsRecovery.identifyHostOS() == OperatingSystemType.MACOS_MOJAVE_OR_OLDER || RestrictionsRecovery.identifyHostOS() == OperatingSystemType.UNIX_LIKE) {
 			builder = new ProcessBuilder("/bin/bash", "-c", "iproxy", "23", ""+port);
-		} else if (RestrictionsRecovery.identifyHostOS() == OperatingSystemType.MACOSCATALINA_OR_NEWER) {
+		} else if (RestrictionsRecovery.identifyHostOS() == OperatingSystemType.MACOS_CATALINA_OR_NEWER) {
 			builder = new ProcessBuilder("/bin/zsh", "-c", "iproxy", "23", ""+port);
 		} else if (RestrictionsRecovery.identifyHostOS() == OperatingSystemType.WINDOWS) {
 			builder = new ProcessBuilder("cmd.exe", "/c", "iproxy", "23", ""+port); // MAKE SURE YOU HAVE IPROXY IN YOUR PATH ENVIRONMENT VARIABLE

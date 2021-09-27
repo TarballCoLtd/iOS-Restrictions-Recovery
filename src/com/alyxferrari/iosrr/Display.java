@@ -67,16 +67,14 @@ public class Display {
 			JLabel help = new JLabel("<html><body><br/>Testers:<br/>Jacob Ward (u/jacobward328)</body></html>");
 			JLabel paypal = new JLabel("<html><body><br/>Special thanks to my PayPal backers:<br/>Jacob Ward<br/>paypal.me/alyxferrari</body></html>");
 			OperatingSystemType ops = RestrictionsRecovery.identifyHostOS();
-			JLabel os = new JLabel();
+			JLabel os = new JLabel("<html><body><br/>Host OS: Unknown");
 			String version = System.getProperty("os.version");
 			if (ops == OperatingSystemType.WINDOWS) {
-				os = new JLabel("<html><body><br/>Host OS: Windows " + version);
-			} else if (ops == OperatingSystemType.MACOSMOJAVE_OR_OLDER || ops == OperatingSystemType.MACOSCATALINA_OR_NEWER) {
+				os = new JLabel("<html><body><br/>Host OS: Windows NT " + version);
+			} else if (ops == OperatingSystemType.MACOS_MOJAVE_OR_OLDER || ops == OperatingSystemType.MACOS_CATALINA_OR_NEWER) {
 				os = new JLabel("<html><body><br/>Host OS: macOS " + version);
-			} else if (ops == OperatingSystemType.UNIX_BASED) {
+			} else if (ops == OperatingSystemType.UNIX_LIKE) {
 				os = new JLabel("<html><body><br/>Host OS: " + System.getProperty("os.name") + " " + version);
-			} else {
-				os = new JLabel("<html><body><br/>Host OS: Unknown");
 			}
 			JButton back = new JButton("Back");
 			back.addActionListener(new BackListener());
@@ -302,17 +300,13 @@ public class Display {
 				OperatingSystemType currentOS = RestrictionsRecovery.identifyHostOS();
 				String backupPath = System.getProperty("user.home") + "\\";
 				if (currentOS == OperatingSystemType.WINDOWS) {
-					String y = "n";
 					File uwpiTunes = new File(backupPath + "AppData\\Local\\Microsoft\\WindowsApps\\AppleInc.iTunes_nzyj5cx40ttqa");
 					if (uwpiTunes.exists()) {
-						y = "y";
-					}
-					if (y.equalsIgnoreCase("y") || y.equalsIgnoreCase("yes")) {
 						backupPath += "Apple\\MobileSync\\Backup\\";
 					} else {
 						backupPath += "AppData\\Roaming\\Apple Computer\\MobileSync\\Backup\\";
 					}
-				} else if (currentOS == OperatingSystemType.MACOSMOJAVE_OR_OLDER || currentOS == OperatingSystemType.MACOSCATALINA_OR_NEWER) {
+				} else if (currentOS == OperatingSystemType.MACOS_MOJAVE_OR_OLDER || currentOS == OperatingSystemType.MACOS_CATALINA_OR_NEWER) {
 					throw new Exception("macOS is not currently supported. Support will come in a future update.");
 				} else {
 					throw new Exception("Your OS is not supported because it is not possible to install iTunes on your OS.");
