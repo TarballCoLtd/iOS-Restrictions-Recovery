@@ -229,7 +229,7 @@ public class Display {
 						panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 						JButton button = new JButton("Back");
 						button.addActionListener(new BackListener());
-						if (!(keychain == null)) {
+						if (keychain != null) {
 							JButton keychainView = new JButton("View failed Keychain dump");
 							keychainView.addActionListener(new KeychainOutputListener(keychain));
 							//panel.add(keychainView);
