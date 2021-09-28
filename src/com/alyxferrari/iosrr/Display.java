@@ -220,27 +220,72 @@ public class Display {
 						Display.FRAME.getContentPane().add(panel);
 						Display.refresh();
 						JOptionPane.showMessageDialog(null, "Found Screen Time passcode! Passcode: " + password);
-					} catch (Exception ex) {
+					} catch (ArrayIndexOutOfBoundsException ex) {
+						ex.printStackTrace();
 						Display.FRAME.getContentPane().removeAll();
 						Display.FRAME.getContentPane().add(new JLabel("Failed to retrieve Screen Time passcode!"));
 						Display.FRAME.getContentPane().add(new JLabel("If you're sure you've done everything correctly, create an issue on GitHub."));
-						Display.FRAME.getContentPane().add(new JLabel(ex.getClass().toString().split(" ")[1]+ ": " + ex.getMessage()));
+						Display.FRAME.getContentPane().add(new JLabel("Screen Time passcode could not be found in Keychain dump."));
+						Display.FRAME.getContentPane().add(new JLabel("This can be caused by one of two things: you don't have a Screen Time passcode, or the Keychain dump failed."));
+						Display.FRAME.getContentPane().add(new JLabel("Check console log for stack trace."));
 						JPanel panel = new JPanel();
 						panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-						JButton button = new JButton("Back");
-						button.addActionListener(new BackListener());
+						JButton back = new JButton("Back");
+						back.addActionListener(new BackListener());
+						JButton saveDump = new JButton("Save Keychain dump");
+						saveDump.addActionListener(new SaveDumpListener(keychain));
 						if (keychain != null) {
 							JButton keychainView = new JButton("View failed Keychain dump");
 							keychainView.addActionListener(new KeychainOutputListener(keychain));
 							//panel.add(keychainView);
 						}
-						panel.add(button);
+						panel.add(saveDump);
+						panel.add(back);
+						Display.FRAME.getContentPane().add(panel);
+						Display.refresh();
+						Display.handleException(ex, true);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						Display.FRAME.getContentPane().removeAll();
+						Display.FRAME.getContentPane().add(new JLabel("Failed to retrieve Screen Time passcode!"));
+						Display.FRAME.getContentPane().add(new JLabel("If you're sure you've done everything correctly, create an issue on GitHub."));
+						Display.FRAME.getContentPane().add(new JLabel(ex.getClass().getName()+ ": " + ex.getMessage()));
+						JPanel panel = new JPanel();
+						panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+						JButton back = new JButton("Back");
+						back.addActionListener(new BackListener());
+						JButton saveDump = new JButton("Save Keychain dump");
+						saveDump.addActionListener(new SaveDumpListener(keychain));
+						if (keychain != null) {
+							JButton keychainView = new JButton("View failed Keychain dump");
+							keychainView.addActionListener(new KeychainOutputListener(keychain));
+							//panel.add(keychainView);
+						}
+						panel.add(saveDump);
+						panel.add(back);
 						Display.FRAME.getContentPane().add(panel);
 						Display.refresh();
 						Display.handleException(ex, true);
 					}
 				}
 			}.start();
+		}
+	}
+	public class SaveDumpListener implements ActionListener {
+		private String dump;
+		public SaveDumpListener(String dump) {
+			this.dump = dump;
+		}
+		public void actionPerformed(ActionEvent ev) {
+			try {
+				PrintWriter writer = new PrintWriter("keychainoutput.txt");
+				writer.println(dump);
+				writer.flush();
+				writer.close();
+				JOptionPane.showMessageDialog(null, "Saved Keychain output to " + System.getProperty("user.dir"));
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 	public class KeychainOutputListener implements ActionListener {
