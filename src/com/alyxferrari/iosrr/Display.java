@@ -149,7 +149,7 @@ public class Display {
 						System.out.println("Uploading ent.xml to device...");
 						ssh.newSCPFileTransfer().upload("ent.xml", "/User/Documents/ent.xml");
 						Session session = ssh.startSession();
-						Display.FRAME.getContentPane().add(new JLabel("Giving keychain_dumper '+x' permissions..."));
+						Display.FRAME.getContentPane().add(new JLabel("Setting keychain_dumper to executable..."));
 						System.out.println("Giving keychain_dumper '+x' permissions...");
 						Display.refresh();
 						session.exec("chmod +x /User/Documents/keychain_dumper");
