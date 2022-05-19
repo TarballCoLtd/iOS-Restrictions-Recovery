@@ -1,7 +1,7 @@
 # iOS-Restrictions-Recovery
 
 by Alyx Ferrari<br/>
-A GUI/CLI tool that can find the Restrictions or Screen Time passcode of any iOS device running iOS 7.0 through iOS 12.4.9. iOS 13, 14, and 15 *should* work, but Keychain-Dumper doesn't work consistently on these versions.
+A GUI/CLI tool that can find the Restrictions or Screen Time passcode of any iOS device running iOS 7.0 through iOS 12.4.9. iOS 13 and 14 *should* work, but Keychain-Dumper doesn't work consistently on these versions.
 
 ## Credit
 
