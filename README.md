@@ -23,8 +23,3 @@ jzlib
 To run this program, you can either download the JAR from the Releases tab or generate one yourself with Maven.<br/>
 OpenSSH is required to use all iOS 12-15 features and the iOS 7.0-11.4.1 SSH features. If you're using checkra1n, iproxy from libimobiledevice will work as an alternative. If you're using any other jailbreak, OpenSSH is available on the default repos.<br/>
 The SQLite 3.x package is also required for the iOS 12-15 tools.
-
-## Contacting me
-
-I will respond to any PM I receive on Reddit.<br/>
-[u/verystrangebeing](https://reddit.com/user/verystrangebeing/)
